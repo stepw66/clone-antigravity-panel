@@ -2,6 +2,12 @@
 
 All notable changes to the "Antigravity Panel" extension will be documented in this file.
 
+## [1.0.0] - 2025-12-09
+
+### Changed
+- **Release**: First stable release with all English comments and MIT license.
+- **Code Quality**: All code comments have been updated to English for better international collaboration.
+
 ## [0.2.1] - 2025-12-09
 
 ### Added
