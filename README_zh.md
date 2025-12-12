@@ -4,10 +4,14 @@
 
 > 轻松监控 AI 配额使用和管理缓存
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![版本](https://img.shields.io/visual-studio-marketplace/v/n2ns.antigravity-panel?style=flat&label=版本)](https://marketplace.visualstudio.com/items?itemName=n2ns.antigravity-panel)
-[![安装量](https://img.shields.io/visual-studio-marketplace/i/n2ns.antigravity-panel?style=flat)](https://marketplace.visualstudio.com/items?itemName=n2ns.antigravity-panel)
-[![下载量](https://img.shields.io/open-vsx/dt/n2ns/antigravity-panel?style=flat)](https://open-vsx.org/extension/n2ns/antigravity-panel)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat&cacheSeconds=3600)](LICENSE)
+[![VS Code](https://img.shields.io/badge/VS%20Code-%3E%3D1.104.0-007ACC?logo=visual-studio-code&style=flat&cacheSeconds=3600)](https://code.visualstudio.com/)
+
+[![版本](https://img.shields.io/visual-studio-marketplace/v/n2ns.antigravity-panel?style=flat&label=版本&cacheSeconds=3600)](https://marketplace.visualstudio.com/items?itemName=n2ns.antigravity-panel)
+[![安装量](https://img.shields.io/visual-studio-marketplace/i/n2ns.antigravity-panel?style=flat&cacheSeconds=3600)](https://marketplace.visualstudio.com/items?itemName=n2ns.antigravity-panel)
+[![Open VSX 版本](https://img.shields.io/open-vsx/v/n2ns/antigravity-panel?style=flat&label=Open%20VSX&cacheSeconds=3600)](https://open-vsx.org/extension/n2ns/antigravity-panel)
+[![下载量](https://img.shields.io/open-vsx/dt/n2ns/antigravity-panel?style=flat&cacheSeconds=3600)](https://open-vsx.org/extension/n2ns/antigravity-panel)
+[![最后更新](https://img.shields.io/github/last-commit/n2ns/antigravity-panel?style=flat&label=最后更新&cacheSeconds=3600)](https://github.com/n2ns/antigravity-panel/commits/main)
 
 **Antigravity Panel** 帮助你掌控 **Google Antigravity IDE** 中的 AI 模型使用情况。实时配额监控、用量趋势分析、强大的缓存管理——一切尽在一个精美的侧边栏面板中。
 

@@ -59,6 +59,10 @@ export class WebviewHtmlBuilder {
     const { cspSource, codiconsUri, stylesUri, webviewUri } = this.config;
     const nonce = generateNonce();
 
+    // NOTE: 'unsafe-inline' is required for style-src because:
+    // - quota-pie.ts uses dynamic inline style: style="background: conic-gradient(...)"
+    // - usage-chart.ts uses dynamic inline style: style="height: Npx; background: linear-gradient(...)"
+    // These cannot be pre-defined in CSS as they depend on runtime quota data.
     return `<!DOCTYPE html>
 <html>
 <head>

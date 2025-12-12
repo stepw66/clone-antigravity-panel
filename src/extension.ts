@@ -15,6 +15,9 @@ import { QuotaViewModel } from "./core/quota_view_model";
 import { QuotaStrategyManager } from "./core/quota_strategy_manager";
 import { StatusBarManager } from "./ui/status_bar";
 import { SidebarProvider } from "./ui/sidebar_provider";
+import { getBrainDir, getConversationsDir, getCodeTrackerActiveDir } from "./utils/paths";
+import { formatBytes } from "./utils/format";
+import { initLogger, setDebugMode, infoLog, errorLog } from "./utils/logger";
 
 /**
  * VS Code implementation of IConfigReader
@@ -49,9 +52,6 @@ class VscodeConfigReader implements IConfigReader, IDisposable {
     this.disposables = [];
   }
 }
-import { getBrainDir, getConversationsDir, getCodeTrackerActiveDir } from "./utils/paths";
-import { formatBytes } from "./utils/format";
-import { initLogger, setDebugMode, infoLog, errorLog } from "./utils/logger";
 
 // Service instances
 let statusBar: StatusBarManager;

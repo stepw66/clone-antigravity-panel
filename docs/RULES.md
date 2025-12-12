@@ -44,7 +44,8 @@ All rules are **mandatory**. Violation must be reported and blocked.
 - Utility modules must minimize `vscode` dependencies
 
 ## Security
-- CSP: no `unsafe-inline`
+- CSP: no `unsafe-inline` for scripts
+  - Exception: `style-src 'unsafe-inline'` is required for dynamic chart rendering (conic-gradient, linear-gradient)
 - Styles must be in external CSS files (e.g., `dist/webview.css`)
 
 ## i18n (if applicable)

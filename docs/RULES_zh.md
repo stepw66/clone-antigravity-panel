@@ -44,7 +44,8 @@
 - 工具类模块必须尽量减少 `vscode` 依赖
 
 ## 安全
-- CSP：禁用 `unsafe-inline`
+- CSP：脚本禁用 `unsafe-inline`
+  - 例外：`style-src 'unsafe-inline'` 是动态图表渲染所必需的（conic-gradient、linear-gradient）
 - 样式必须放在外部 CSS 文件（如 `dist/webview.css`）
 
 ## 国际化（如有）

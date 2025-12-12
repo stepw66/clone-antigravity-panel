@@ -2,13 +2,14 @@
 
 import * as os from "os";
 import * as path from "path";
+import { GEMINI_ROOT_DIR_NAME, ANTIGRAVITY_DIR_NAME } from "./constants";
 
 export function getGeminiRootDir(): string {
-  return path.join(os.homedir(), ".gemini");
+  return path.join(os.homedir(), GEMINI_ROOT_DIR_NAME);
 }
 
 export function getGeminiBaseDir(): string {
-  return path.join(getGeminiRootDir(), "antigravity");
+  return path.join(getGeminiRootDir(), ANTIGRAVITY_DIR_NAME);
 }
 
 export function getGlobalRulesPath(): string {

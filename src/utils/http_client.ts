@@ -107,7 +107,10 @@ function doRequest<T>(options: HttpRequestOptions, protocol: Protocol): Promise<
         ...headers,
       },
       timeout,
-      // HTTPS 选项
+      // SECURITY NOTE: rejectUnauthorized: false is intentional and safe here because:
+      // - Communication is strictly localhost (127.0.0.1) only
+      // - The Antigravity Language Server is a fully trusted local process
+      // - Self-signed certificates are common in local dev environments
       ...(protocol === "https" ? { rejectUnauthorized: false } : {}),
     };
     
