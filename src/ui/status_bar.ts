@@ -90,8 +90,9 @@ export class StatusBarManager implements vscode.Disposable {
       tooltipParts.push(
         `Active: ${statusData.label}`,
         `Remaining: ${statusData.percentage}%`,
-        `Used: ${100 - statusData.percentage}%`,
-        `Reset: ${statusData.resetTime}`
+        `Reset: ${statusData.resetTime}`,
+        `Rate: ${statusData.usageRate.toFixed(1)}%/h`,
+        `Runway: ${statusData.runway}`
       );
 
       // Set background color based on thresholds

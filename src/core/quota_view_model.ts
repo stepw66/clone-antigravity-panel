@@ -13,6 +13,7 @@ import { QuotaStrategyManager } from './quota_strategy_manager';
 import { QuotaHistoryManager, UsageBucket } from './quota_history';
 import { ConfigManager } from './config_manager';
 import { QuotaDisplayItem, UsageChartData } from '../ui/webview/types';
+import { QUOTA_RESET_HOURS } from '../utils/constants';
 
 /** Group quota state for caching */
 export interface QuotaGroupState {
@@ -38,6 +39,10 @@ export interface StatusBarData {
   percentage: number;
   resetTime: string;
   color: string;
+  /** Usage rate (%/hour), 0 if no data */
+  usageRate: number;
+  /** Runway prediction (e.g. "~2h", ">7d", "Stable") */
+  runway: string;
 }
 
 const ACTIVE_GROUP_THRESHOLD = 0.1; // Minimum consumption to trigger active group change
@@ -181,13 +186,22 @@ export class QuotaViewModel {
     const displayHours = config.historyDisplayMinutes / 60;
     const usageRate = displayHours > 0 ? totalUsage / displayHours : 0;
 
+    // Calculate runway using scheme D:
+    // If estimated usage before reset < remaining → "Stable"
+    // If estimated usage before reset >= remaining → show time until exhaustion
     let runway = 'Stable';
     if (usageRate > 0 && currentRemaining > 0) {
-      const hoursUntilEmpty = currentRemaining / usageRate;
-      if (hoursUntilEmpty > 168) runway = '>7d';
-      else if (hoursUntilEmpty > 24) runway = `~${Math.round(hoursUntilEmpty / 24)}d`;
-      else if (hoursUntilEmpty > 1) runway = `~${Math.round(hoursUntilEmpty)}h`;
-      else runway = `~${Math.round(hoursUntilEmpty * 60)}m`;
+      const estimatedUsageBeforeReset = usageRate * QUOTA_RESET_HOURS;
+      if (estimatedUsageBeforeReset >= currentRemaining) {
+        // Will exhaust before reset, calculate when
+        const hoursUntilEmpty = currentRemaining / usageRate;
+        if (hoursUntilEmpty >= 1) {
+          runway = `~${Math.round(hoursUntilEmpty)}h`;
+        } else {
+          runway = `~${Math.round(hoursUntilEmpty * 60)}m`;
+        }
+      }
+      // else: Stable (enough quota until reset)
     }
 
     const activeGroup = this.strategyManager.getGroups().find(g => g.id === activeGroupId);
@@ -207,15 +221,25 @@ export class QuotaViewModel {
   restoreFromCache(): QuotaViewState | null {
     const cached = this.historyManager.getLastViewState<QuotaViewState>();
     if (cached && cached.groups && cached.activeGroupId) {
-      this.state = cached;
-
       // Also restore snapshot for models mode
       const cachedSnapshot = this.historyManager.getLastSnapshot<QuotaSnapshot>();
       if (cachedSnapshot) {
         this.lastSnapshot = cachedSnapshot;
       }
 
-      return cached;
+      // Find active group's current remaining percentage
+      const activeGroup = cached.groups.find(g => g.id === cached.activeGroupId);
+      const currentRemaining = activeGroup?.remaining || 0;
+
+      // Rebuild chart from history (cached chart has stale timestamps)
+      const chart = this.buildChartData(cached.activeGroupId, currentRemaining);
+
+      this.state = {
+        ...cached,
+        chart
+      };
+
+      return this.state;
     }
     return null;
   }
@@ -274,11 +298,14 @@ export class QuotaViewModel {
   /** Get StatusBar display data */
   getStatusBarData(): StatusBarData {
     const activeGroup = this.state.groups.find(g => g.id === this.state.activeGroupId);
+    const prediction = this.state.chart?.prediction;
     return {
       label: activeGroup?.label || 'Unknown',
       percentage: Math.round(activeGroup?.remaining || 0),
       resetTime: activeGroup?.resetTime || 'N/A',
-      color: activeGroup?.themeColor || '#888'
+      color: activeGroup?.themeColor || '#888',
+      usageRate: prediction?.usageRate || 0,
+      runway: prediction?.runway || 'Stable'
     };
   }
 

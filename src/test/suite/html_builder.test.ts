@@ -28,7 +28,7 @@ suite('WebviewHtmlBuilder Test Suite', () => {
       assert.ok(html.includes('</html>'), 'Should close html tag');
     });
 
-    test('should include Content-Security-Policy without unsafe-inline', () => {
+    test('should include Content-Security-Policy with unsafe-inline for styles only', () => {
       const html = new WebviewHtmlBuilder()
         .setHead(testCspSource, testCodiconsUri, testStylesUri, testWebviewUri)
         .build();
@@ -36,7 +36,8 @@ suite('WebviewHtmlBuilder Test Suite', () => {
       assert.ok(html.includes('Content-Security-Policy'), 'Should have CSP meta tag');
       assert.ok(html.includes("default-src 'none'"), 'Should have restrictive default-src');
       assert.ok(html.includes("script-src 'nonce-"), 'Should have nonce-based script-src');
-      assert.ok(!html.includes("'unsafe-inline'"), 'Should NOT have unsafe-inline');
+      assert.ok(html.includes("style-src") && html.includes("'unsafe-inline'"), 'Should have unsafe-inline for styles (needed for dynamic gradients)');
+      assert.ok(!html.includes("script-src") || !html.match(/script-src[^;]*'unsafe-inline'/), 'Should NOT have unsafe-inline for scripts');
     });
 
     test('should include codicons stylesheet', () => {
