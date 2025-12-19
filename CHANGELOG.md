@@ -2,7 +2,7 @@ English | [中文文档](docs/CHANGELOG_zh.md)
 
 # Changelog
 
-## [2.3.0] - 2025-12-18
+## [2.2.0] - 2025-12-18
 
 ### Changed
 - **Rebranding**: Global rebranding from `gagp` to `tfa` (Toolkit for Antigravity) for consistency.
