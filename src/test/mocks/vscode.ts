@@ -82,15 +82,25 @@ export const window = {
     return Promise.resolve();
   },
   showWarningMessage(message: string, ...items: any[]): Thenable<any> {
-    return Promise.resolve();
+    (window as any).lastMessageItems = items;
+    return Promise.resolve((window as any).nextMessageSelection);
   },
   showErrorMessage(message: string, ...items: any[]): Thenable<any> {
-    return Promise.resolve();
-  }
+    (window as any).lastMessageItems = items;
+    return Promise.resolve((window as any).nextMessageSelection);
+  },
+  lastMessageItems: [] as any[],
+  nextMessageSelection: undefined as any
 };
 
 export const commands = {
-  executeCommand: (command: string, ...rest: any[]) => Promise.resolve()
+  executeCommand: (command: string, ...rest: any[]) => {
+    (commands as any).lastExecutedCommand = command;
+    (commands as any).lastExecutedArgs = rest;
+    return Promise.resolve();
+  },
+  lastExecutedCommand: undefined as string | undefined,
+  lastExecutedArgs: [] as any[]
 };
 
 export enum TreeItemCollapsibleState {

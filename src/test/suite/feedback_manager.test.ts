@@ -42,4 +42,20 @@ suite('FeedbackManager Test Suite', () => {
         assert.ok(!decodedBody.includes('Candidate Process Count'), 'Should not include candidate count if undefined');
         assert.ok(!decodedBody.includes('Parsing Details'), 'Should not include parsing details if undefined');
     });
+
+    test('showFeedbackNotification should show both buttons and handle diagnostic click', async () => {
+        // Prepare mock selection
+        (vscode.window as any).nextMessageSelection = 'Run Diagnostics';
+        (vscode.commands as any).lastExecutedCommand = undefined;
+
+        await FeedbackManager.showFeedbackNotification('test message', mockMeta);
+
+        // Verify buttons shown
+        const items = (vscode.window as any).lastMessageItems;
+        assert.ok(items.includes('Feedback'), 'Missing Feedback button');
+        assert.ok(items.includes('Run Diagnostics'), 'Missing Run Diagnostics button');
+
+        // Verify command executed
+        assert.strictEqual((vscode.commands as any).lastExecutedCommand, 'tfa.runDiagnostics');
+    });
 });
