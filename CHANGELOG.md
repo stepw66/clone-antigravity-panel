@@ -2,6 +2,19 @@ English | [中文文档](docs/CHANGELOG_zh.md)
 
 # Changelog
 
+## [2.2.2] - 2025-12-20
+
+### Changed
+- **Cache Settings Reorganization**: Moved cache-related settings (`autoClean`, `autoCleanKeepCount`, `scanInterval`, `warningSize`, `hideEmptyFolders`) from "System & Maintenance" to a dedicated "TFA: Cache" configuration group for better discoverability.
+- **Configuration Namespace Update**: Renamed cache settings from `tfa.system.*` to `tfa.cache.*` namespace for clearer semantics.
+- **Auto-Clean Notification**: Improved notification message to show before/after cache sizes (e.g., "Auto-clean completed. Before: 512 MB, After: 245 MB.").
+- **Cache Warning Buttons**: Replaced "Clean Now Settings" button with "View" (opens brain directory) and "Settings" (opens extension settings) for clearer user actions.
+- **Warning Cooldown**: Reduced cache warning notification cooldown from 24 hours to 1 hour for more timely alerts.
+
+### Fixed
+- **Duplicate Notification Bug**: Fixed an issue where both auto-clean and manual warning notifications could appear in the same scan cycle.
+- **L10n Completeness**: Updated all 10 language translation files with new strings for cache notifications.
+
 ## [2.2.1] - 2025-12-18
 
 ### Changed

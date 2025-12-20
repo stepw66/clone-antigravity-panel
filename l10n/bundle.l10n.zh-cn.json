@@ -26,5 +26,9 @@
     "Detection failed": "探测失败",
     "Found {0} candidates. Duration: {1}s.": "检测到 {0} 个候选。耗时：{1}秒。",
     "Show Details": "显示详情",
-    "Run Diagnostics": "运行诊断"
+    "Run Diagnostics": "运行诊断",
+    "Auto-clean completed. Before: {0}, After: {1}.": "自动清理完成。清理前：{0}，清理后：{1}。",
+    "View": "查看",
+    "Settings": "设置",
+    "Cache size ({0}) exceeds threshold.": "缓存大小 ({0}) 已超过阈值。"
 }

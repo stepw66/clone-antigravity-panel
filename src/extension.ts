@@ -15,6 +15,7 @@ import { AppViewModel } from "./view-model/app.vm";
 import { StatusBarManager } from "./view/status-bar";
 import { SidebarProvider } from "./view/sidebar-provider";
 import { initLogger, setDebugMode, infoLog, errorLog, getLogger } from "./shared/utils/logger";
+import { formatBytes } from "./shared/utils/format";
 import { CommunicationAttempt } from "./shared/utils/types";
 
 
@@ -194,24 +195,69 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     immediate: false, // Already did initial refresh
   });
 
-  // Polling: Cache Check (for warnings)
+  // State for notification cooldown
+  let lastAutoCleanNotificationTime = 0;
+
+  // Polling: Cache Check (for warnings and auto-clean)
   scheduler.register({
     name: "checkCache",
-    interval: config['system.scanInterval'] * 1000,
+    interval: config['cache.scanInterval'] * 1000,
     execute: async () => {
-      // Check cache size threshold logic here or move to VM?
-      // For now, let's keep simple check in extension or move to VM 'checkWarnings'
       const state = appViewModel.getState();
+      const currentConfig = configManager.getConfig();
       const cacheMB = state.cache.totalSize / (1024 * 1024);
-      if (cacheMB > config['system.cacheWarningSize']) {
+      const thresholdMB = currentConfig['cache.warningSize'];
+
+      if (cacheMB > thresholdMB) {
+        // Option 1: Auto-Clean (if enabled)
+        if (currentConfig['cache.autoClean']) {
+          const beforeSize = formatBytes(state.cache.totalSize);
+          const result = await appViewModel.performAutoClean();
+          // performAutoClean already refreshes cache internally
+          if (result && result.deletedCount > 0) {
+            const now = Date.now();
+            // Show notification once per hour
+            if (now - lastAutoCleanNotificationTime > 3600 * 1000) {
+              const afterState = appViewModel.getState();
+              const afterSize = formatBytes(afterState.cache.totalSize);
+              const message = vscode.l10n.t("Auto-clean completed. Before: {0}, After: {1}.", beforeSize, afterSize);
+              const viewAction = vscode.l10n.t("View");
+
+              vscode.window.showInformationMessage(message, viewAction).then(selection => {
+                if (selection === viewAction) {
+                  const brainDirPath = cacheService.getBrainDirPath();
+                  vscode.env.openExternal(vscode.Uri.file(brainDirPath)).catch(err => {
+                    errorLog("Failed to open brain directory", err);
+                  });
+                }
+              });
+              lastAutoCleanNotificationTime = now;
+            }
+          }
+          // Auto-clean handled, don't show manual warning
+          return;
+        }
+
+        // Option 2: Manual Warning (if auto-clean is OFF)
         const lastWarned = storageService.getLastCacheWarningTime();
         const now = Date.now();
-        if (!lastWarned || now - lastWarned > 24 * 3600 * 1000) {
+        // Warning once per hour
+        if (!lastWarned || now - lastWarned > 3600 * 1000) {
+          const viewAction = vscode.l10n.t("View");
+          const settingsAction = vscode.l10n.t("Settings");
           vscode.window.showWarningMessage(
-            `Cache size (${state.cache.formattedTotal}) exceeds threshold.`,
-            "Clean Now"
-          ).then(s => {
-            if (s === "Clean Now") appViewModel.cleanCache();
+            vscode.l10n.t("Cache size ({0}) exceeds threshold.", state.cache.formattedTotal),
+            viewAction,
+            settingsAction
+          ).then(selection => {
+            if (selection === viewAction) {
+              const brainDirPath = cacheService.getBrainDirPath();
+              vscode.env.openExternal(vscode.Uri.file(brainDirPath)).catch(err => {
+                errorLog("Failed to open brain directory", err);
+              });
+            } else if (selection === settingsAction) {
+              vscode.commands.executeCommand("tfa.openSettings");
+            }
           });
           storageService.setLastCacheWarningTime(now);
         }
@@ -226,7 +272,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // Config listener to update scheduler
   configReader.onConfigChange((newConfig) => {
     scheduler.updateInterval("refreshQuota", newConfig['dashboard.refreshRate'] * 1000);
-    scheduler.updateInterval("checkCache", newConfig['system.scanInterval'] * 1000);
+    scheduler.updateInterval("checkCache", newConfig['cache.scanInterval'] * 1000);
     setDebugMode(newConfig['system.debugMode']);
 
     // Also trigger a refresh on config change to update UI view modes

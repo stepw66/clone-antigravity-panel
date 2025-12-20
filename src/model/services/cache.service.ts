@@ -79,7 +79,7 @@ export class CacheService implements ICacheService {
                     path: taskPath,
                     size,
                     fileCount,
-                    createdAt: stat.birthtimeMs,
+                    createdAt: stat.birthtimeMs || stat.mtimeMs,
                 });
             }
 
@@ -164,22 +164,68 @@ export class CacheService implements ICacheService {
     /**
      * Clean cache by removing old tasks
      * @param keepCount Number of newest tasks to keep (default: 5)
-     * @returns Number of tasks deleted
+     * @returns Object containing number of tasks deleted and total bytes freed
      */
-    async cleanCache(keepCount: number = 5): Promise<number> {
+    async cleanCache(keepCount: number = 5): Promise<{ deletedCount: number, freedBytes: number }> {
         try {
-            const tasks = await this.getBrainTasks();
+            let deletedCount = 0;
+            let freedBytes = 0;
 
-            // Tasks are already sorted by createdAt descending (newest first)
-            const tasksToDelete = tasks.slice(keepCount);
+            // 1. Clean Brain Task Directories
+            const tasks = await this.getBrainTasks(); // Already sorted by mtime descending
+            if (tasks.length > keepCount) {
+                const tasksToDelete = tasks.slice(keepCount);
+                for (const task of tasksToDelete) {
+                    freedBytes += task.size;
+                    // Also check for the .pb file size before deleteTask removes it
+                    const pbPath = path.join(this.baseConversationsDir, `${task.id}.pb`);
+                    try {
+                        const pbStat = await fs.promises.stat(pbPath);
+                        freedBytes += pbStat.size;
+                    } catch { /* ignore if not exists */ }
 
-            for (const task of tasksToDelete) {
-                await this.deleteTask(task.id);
+                    await this.deleteTask(task.id);
+                    deletedCount++;
+                }
             }
 
-            return tasksToDelete.length;
-        } catch {
-            return 0;
+            // 2. Clean Orphan Conversation Files (.pb) 
+            // In case some folders were deleted but .pb files remain
+            try {
+                const pbFiles = await fs.promises.readdir(this.baseConversationsDir, { withFileTypes: true });
+                const pbItems = [];
+                for (const file of pbFiles) {
+                    if (file.isFile() && file.name.endsWith('.pb')) {
+                        const filePath = path.join(this.baseConversationsDir, file.name);
+                        const stat = await fs.promises.stat(filePath);
+                        pbItems.push({ name: file.name, path: filePath, mtime: stat.mtimeMs, size: stat.size });
+                    }
+                }
+
+                // Sort by mtime descending (newest first)
+                pbItems.sort((a, b) => b.mtime - a.mtime);
+
+                if (pbItems.length > keepCount) {
+                    const pbToDelete = pbItems.slice(keepCount);
+                    for (const item of pbToDelete) {
+                        // Check if it's already deleted by the deleteTask loop above
+                        try {
+                            await fs.promises.access(item.path); // Check if file still exists
+                            freedBytes += item.size;
+                            await fs.promises.rm(item.path, { force: true });
+                            // We don't increment deletedCount here as it primarily tracks brain tasks.
+                            // Orphan .pb files are a secondary cleanup.
+                        } catch { /* already gone or other error, ignore */ }
+                    }
+                }
+            } catch {
+                // Ignore errors reading conversations dir, e.g., if it doesn't exist
+            }
+
+            return { deletedCount, freedBytes };
+        } catch (err) {
+            console.error('Error during cleanCache:', err);
+            return { deletedCount: 0, freedBytes: 0 };
         }
     }
 
@@ -282,7 +328,7 @@ export class CacheService implements ICacheService {
     /**
      * Legacy method for backward compatibility
      */
-    async clean(): Promise<number> {
+    async clean(): Promise<{ deletedCount: number, freedBytes: number }> {
         return this.cleanCache(5);
     }
 }

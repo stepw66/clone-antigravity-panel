@@ -26,5 +26,9 @@
     "Detection failed": "Detection failed",
     "Found {0} candidates. Duration: {1}s.": "Found {0} candidates. Duration: {1}s.",
     "Show Details": "Show Details",
-    "Run Diagnostics": "Run Diagnostics"
+    "Run Diagnostics": "Run Diagnostics",
+    "Auto-clean completed. Before: {0}, After: {1}.": "Auto-clean completed. Before: {0}, After: {1}.",
+    "View": "View",
+    "Settings": "Settings",
+    "Cache size ({0}) exceeds threshold.": "Cache size ({0}) exceeds threshold."
 }

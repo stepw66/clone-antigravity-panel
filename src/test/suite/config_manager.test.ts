@@ -69,21 +69,21 @@ suite('ConfigManager Test Suite', () => {
 
   suite('Cache Check Interval Validation', () => {
     test('should enforce minimum of 30 seconds for low values', () => {
-      mockReader.set('system.scanInterval', 10);
+      mockReader.set('cache.scanInterval', 10);
       const config = configManager.getConfig();
-      assert.strictEqual(config["system.scanInterval"], MIN_CACHE_CHECK_INTERVAL);
+      assert.strictEqual(config["cache.scanInterval"], MIN_CACHE_CHECK_INTERVAL);
     });
 
     test('should allow values at minimum', () => {
-      mockReader.set('system.scanInterval', 30);
+      mockReader.set('cache.scanInterval', 30);
       const config = configManager.getConfig();
-      assert.strictEqual(config["system.scanInterval"], 30);
+      assert.strictEqual(config["cache.scanInterval"], 30);
     });
 
     test('should allow values above minimum', () => {
-      mockReader.set('system.scanInterval', 120);
+      mockReader.set('cache.scanInterval', 120);
       const config = configManager.getConfig();
-      assert.strictEqual(config["system.scanInterval"], 120);
+      assert.strictEqual(config["cache.scanInterval"], 120);
     });
   });
 

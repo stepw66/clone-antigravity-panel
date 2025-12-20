@@ -94,9 +94,9 @@ export interface ICacheService {
     /**
      * Clean cache by removing old tasks
      * @param keepCount Number of newest tasks to keep
-     * @returns Number of tasks deleted
+     * @returns Object containing number of tasks deleted and total bytes freed
      */
-    cleanCache(keepCount?: number): Promise<number>;
+    cleanCache(keepCount?: number): Promise<{ deletedCount: number, freedBytes: number }>;
 }
 
 // ==================== Storage Service ====================

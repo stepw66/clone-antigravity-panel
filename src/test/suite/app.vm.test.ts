@@ -37,7 +37,7 @@ const defaultMockCacheService: ICacheService = {
     deleteTask: async () => { },
     deleteContext: async () => { },
     deleteFile: async () => { },
-    cleanCache: async () => 0
+    cleanCache: async () => ({ deletedCount: 0, freedBytes: 0 })
 };
 
 const defaultMockStorageService: IStorageService = {

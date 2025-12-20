@@ -48,7 +48,7 @@ export class ConfigManager {
     const rawPollingInterval = this.reader.get<number>("dashboard.refreshRate", 120);
     const pollingInterval = Math.max(rawPollingInterval, MIN_POLLING_INTERVAL);
 
-    const rawCacheCheckInterval = this.reader.get<number>("system.scanInterval", 120);
+    const rawCacheCheckInterval = this.reader.get<number>("cache.scanInterval", 120);
     const cacheCheckInterval = Math.max(rawCacheCheckInterval, MIN_CACHE_CHECK_INTERVAL);
 
     return {
@@ -66,11 +66,14 @@ export class ConfigManager {
       "status.warningThreshold": this.reader.get<number>("status.warningThreshold", 30),
       "status.criticalThreshold": this.reader.get<number>("status.criticalThreshold", 10),
 
-      // 3. System & Maintenance Settings
-      "system.cacheWarningSize": this.reader.get<number>("system.cacheWarningSize", 500),
-      "system.autoClean": this.reader.get<boolean>("system.autoClean", false),
-      "system.hideEmptyFolders": this.reader.get<boolean>("system.hideEmptyFolders", false),
-      "system.scanInterval": cacheCheckInterval,
+      // 3. Cache Settings
+      "cache.autoClean": this.reader.get<boolean>("cache.autoClean", false),
+      "cache.autoCleanKeepCount": this.reader.get<number>("cache.autoCleanKeepCount", 5),
+      "cache.scanInterval": cacheCheckInterval,
+      "cache.warningSize": this.reader.get<number>("cache.warningSize", 500),
+      "cache.hideEmptyFolders": this.reader.get<boolean>("cache.hideEmptyFolders", false),
+
+      // 4. System & Maintenance Settings
       "system.serverHost": this.reader.get<string>("system.serverHost", DEFAULT_SERVER_HOST),
       "system.apiPath": this.reader.get<string>("system.apiPath", DEFAULT_QUOTA_API_PATH),
       "system.debugMode": this.reader.get<boolean>("system.debugMode", false),

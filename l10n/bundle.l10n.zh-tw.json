@@ -20,11 +20,15 @@
     "Running Connectivity Diagnostics...": "正在執行連線診斷...",
     "✅ Success: Connection established on port {0} (CSRF: {1})": "✅ 成功：已在連接埠 {0} 建立連線 (CSRF: {1})",
     "No server process found.": "找不到服務處理程序。",
-    "Multiple servers found but none belong to this IDE instance.": "偵測到多個服務，但没有一個属于目前的 IDE 實例。",
-    "Process found but no listening port detected.": "已找到處理程序，但未偵测到接聽連接埠。",
+    "Multiple servers found but none belong to this IDE instance.": "偵測到多個服務，但沒有一個屬於目前的 IDE 實例。",
+    "Process found but no listening port detected.": "已找到處理程序，但未偵測到接聽連接埠。",
     "Handshake failed (possible login issue).": "交握失敗（可能是登入問題）。",
-    "Detection failed": "偵测失败",
-    "Found {0} candidates. Duration: {1}s.": "偵测到 {0} 個候選。耗時：{1}秒。",
+    "Detection failed": "偵測失敗",
+    "Found {0} candidates. Duration: {1}s.": "偵測到 {0} 個候選。耗時：{1}秒。",
     "Show Details": "顯示詳細資料",
-    "Run Diagnostics": "執行診斷"
+    "Run Diagnostics": "執行診斷",
+    "Auto-clean completed. Before: {0}, After: {1}.": "自動清理完成。清理前：{0}，清理後：{1}。",
+    "View": "檢視",
+    "Settings": "設定",
+    "Cache size ({0}) exceeds threshold.": "快取大小 ({0}) 已超過閾值。"
 }

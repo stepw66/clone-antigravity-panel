@@ -2,7 +2,7 @@
   "name": "antigravity-panel",
   "displayName": "Toolkit for Antigravity",
   "description": "%extension.description%",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "publisher": "n2ns",
   "license": "GPL-3.0-only",
   "repository": {
@@ -127,7 +127,7 @@
               "%config.quotaDisplayStyle.semi-arc%",
               "%config.quotaDisplayStyle.classic-donut%"
             ],
-            "description": "%config.dashboard.10_gaugeStyle.description%"
+            "description": "%config.dashboard.gaugeStyle.description%"
           },
           "tfa.dashboard.viewMode": {
             "type": "string",
@@ -141,7 +141,7 @@
               "%config.visualizationMode.groups%",
               "%config.visualizationMode.models%"
             ],
-            "description": "%config.dashboard.20_viewMode.description%"
+            "description": "%config.dashboard.viewMode.description%"
           },
           "tfa.dashboard.historyRange": {
             "type": "number",
@@ -149,20 +149,20 @@
             "minimum": 10,
             "maximum": 120,
             "order": 30,
-            "description": "%config.dashboard.30_historyRange.description%"
+            "description": "%config.dashboard.historyRange.description%"
           },
           "tfa.dashboard.refreshRate": {
             "type": "number",
             "default": 120,
             "minimum": 60,
             "order": 40,
-            "description": "%config.dashboard.40_refreshRate.description%"
+            "description": "%config.dashboard.refreshRate.description%"
           },
           "tfa.dashboard.includeSecondaryModels": {
             "type": "boolean",
             "default": false,
             "order": 50,
-            "description": "%config.dashboard.50_includeSecondaryModels.description%"
+            "description": "%config.dashboard.includeSecondaryModels.description%"
           }
         }
       },
@@ -173,13 +173,13 @@
             "type": "boolean",
             "default": true,
             "order": 10,
-            "description": "%config.status.10_showQuota.description%"
+            "description": "%config.status.showQuota.description%"
           },
           "tfa.status.showCache": {
             "type": "boolean",
             "default": true,
             "order": 20,
-            "description": "%config.status.20_showCache.description%"
+            "description": "%config.status.showCache.description%"
           },
           "tfa.status.displayFormat": {
             "type": "string",
@@ -197,7 +197,7 @@
               "%config.statusBarStyle.used%",
               "%config.statusBarStyle.remaining%"
             ],
-            "description": "%config.status.30_displayFormat.description%"
+            "description": "%config.status.displayFormat.description%"
           },
           "tfa.status.warningThreshold": {
             "type": "number",
@@ -205,7 +205,7 @@
             "minimum": 5,
             "maximum": 100,
             "order": 40,
-            "description": "%config.status.40_warningThreshold.description%"
+            "description": "%config.status.warningThreshold.description%"
           },
           "tfa.status.criticalThreshold": {
             "type": "number",
@@ -213,57 +213,70 @@
             "minimum": 1,
             "maximum": 50,
             "order": 50,
-            "description": "%config.status.50_criticalThreshold.description%"
+            "description": "%config.status.criticalThreshold.description%"
+          }
+        }
+      },
+      {
+        "title": "TFA: Cache",
+        "properties": {
+          "tfa.cache.autoClean": {
+            "type": "boolean",
+            "default": false,
+            "order": 10,
+            "description": "%config.cache.autoClean.description%"
+          },
+          "tfa.cache.autoCleanKeepCount": {
+            "type": "number",
+            "default": 5,
+            "minimum": 1,
+            "maximum": 50,
+            "order": 20,
+            "description": "%config.cache.autoCleanKeepCount.description%"
+          },
+          "tfa.cache.scanInterval": {
+            "type": "number",
+            "default": 120,
+            "minimum": 30,
+            "maximum": 600,
+            "order": 30,
+            "description": "%config.cache.scanInterval.description%"
+          },
+          "tfa.cache.warningSize": {
+            "type": "number",
+            "default": 500,
+            "minimum": 100,
+            "order": 40,
+            "description": "%config.cache.warningSize.description%"
+          },
+          "tfa.cache.hideEmptyFolders": {
+            "type": "boolean",
+            "default": false,
+            "order": 50,
+            "description": "%config.cache.hideEmptyFolders.description%"
           }
         }
       },
       {
         "title": "TFA: System & Maintenance",
         "properties": {
-          "tfa.system.cacheWarningSize": {
-            "type": "number",
-            "default": 500,
-            "minimum": 100,
-            "order": 10,
-            "description": "%config.system.10_cacheWarningSize.description%"
-          },
-          "tfa.system.autoClean": {
-            "type": "boolean",
-            "default": false,
-            "order": 20,
-            "description": "%config.system.20_autoClean.description%"
-          },
-          "tfa.system.hideEmptyFolders": {
-            "type": "boolean",
-            "default": false,
-            "order": 30,
-            "description": "%config.system.30_hideEmptyFolders.description%"
-          },
-          "tfa.system.scanInterval": {
-            "type": "number",
-            "default": 120,
-            "minimum": 30,
-            "maximum": 600,
-            "order": 40,
-            "description": "%config.system.40_scanInterval.description%"
-          },
           "tfa.system.serverHost": {
             "type": "string",
             "default": "127.0.0.1",
-            "order": 50,
-            "description": "%config.system.50_serverHost.description%"
+            "order": 10,
+            "description": "%config.system.serverHost.description%"
           },
           "tfa.system.apiPath": {
             "type": "string",
             "default": "/exa.language_server_pb.LanguageServerService/GetUserStatus",
-            "order": 60,
-            "description": "%config.system.60_apiPath.description%"
+            "order": 20,
+            "description": "%config.system.apiPath.description%"
           },
           "tfa.system.debugMode": {
             "type": "boolean",
             "default": false,
             "order": 99,
-            "description": "%config.system.99_debugMode.description%"
+            "description": "%config.system.debugMode.description%"
           }
         }
       }

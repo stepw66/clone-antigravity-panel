@@ -188,15 +188,19 @@ export interface TfaConfig {
   /** Status bar critical threshold (%) */
   "status.criticalThreshold": number;
 
-  // ===== 3. System & Maintenance Settings =====
-  /** Cache warning threshold (MB) */
-  "system.cacheWarningSize": number;
+  // ===== 3. Cache Settings =====
   /** Whether to auto-clean cache */
-  "system.autoClean": boolean;
-  /** Hide empty folders in tree views */
-  "system.hideEmptyFolders": boolean;
+  "cache.autoClean": boolean;
+  /** Number of newest tasks to keep during auto-clean */
+  "cache.autoCleanKeepCount": number;
   /** Cache check interval (seconds), minimum 30 */
-  "system.scanInterval": number;
+  "cache.scanInterval": number;
+  /** Cache warning threshold (MB) */
+  "cache.warningSize": number;
+  /** Hide empty folders in tree views */
+  "cache.hideEmptyFolders": boolean;
+
+  // ===== 4. System & Maintenance Settings =====
   /** Custom server hostname for quota metrics (advanced users only) */
   "system.serverHost": string;
   /** Custom API path for quota metrics (advanced users only) */

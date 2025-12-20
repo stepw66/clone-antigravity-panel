@@ -133,10 +133,26 @@ export class AppViewModel implements vscode.Disposable {
         }
     }
 
-    async cleanCache(): Promise<number> {
-        const cleaned = await this.cacheService.cleanCache();
+    /**
+     * Clean cache by removing old tasks
+     * @param keepCount Number of newest tasks to keep
+     */
+    async cleanCache(keepCount?: number): Promise<{ deletedCount: number, freedBytes: number }> {
+        const result = await this.cacheService.cleanCache(keepCount);
         await this.refreshCache();
-        return cleaned;
+        return result;
+    }
+
+    /**
+     * Perform auto-clean based on configuration
+     */
+    async performAutoClean(): Promise<{ deletedCount: number, freedBytes: number } | null> {
+        const config = this.configManager.getConfig();
+        if (!config["cache.autoClean"]) return null;
+
+        const keepCount = config["cache.autoCleanKeepCount"] || 5;
+        const result = await this.cleanCache(keepCount);
+        return result;
     }
 
     async deleteTask(taskId: string): Promise<void> {

@@ -79,10 +79,11 @@ suite('CacheService Test Suite', () => {
         assert.strictEqual(info.brainCount, 7);
 
         // Clean to keep 5
-        const deletedCount = await cacheService.cleanCache(5);
+        const result = await cacheService.cleanCache(5);
 
         info = await cacheService.getCacheInfo();
-        assert.strictEqual(deletedCount, 2);
+        assert.strictEqual(result.deletedCount, 2);
+        assert.ok(result.freedBytes > 0); // Should have freed some bytes
         assert.strictEqual(info.brainCount, 5);
     });
 });
