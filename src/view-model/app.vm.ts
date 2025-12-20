@@ -369,8 +369,8 @@ export class AppViewModel implements vscode.Disposable {
     private buildChartData(activeGroupId: string, currentRemaining: number): UsageChartData {
         const config = this.configManager.getConfig();
         const buckets = this.storageService.calculateUsageBuckets(
-            config["1_dashboard.30_historyRange"],
-            config["1_dashboard.40_refreshRate"] / 60
+            config["dashboard.historyRange"],
+            config["dashboard.refreshRate"] / 60
         );
 
         const groupColors: Record<string, string> = {};
@@ -390,8 +390,8 @@ export class AppViewModel implements vscode.Disposable {
             buckets: coloredBuckets,
             maxUsage: this.storageService.getMaxUsage(buckets),
             groupColors,
-            displayMinutes: config["1_dashboard.30_historyRange"],
-            interval: config["1_dashboard.40_refreshRate"],
+            displayMinutes: config["dashboard.historyRange"],
+            interval: config["dashboard.refreshRate"],
             prediction
         };
     }
@@ -408,7 +408,7 @@ export class AppViewModel implements vscode.Disposable {
                 if (item.groupId === activeGroupId) totalUsage += item.usage;
             }
         }
-        const historyDisplayMinutes = config["1_dashboard.30_historyRange"];
+        const historyDisplayMinutes = config["dashboard.historyRange"];
         const usageRate = (historyDisplayMinutes / 60) > 0 ? totalUsage / (historyDisplayMinutes / 60) : 0;
         let runway = 'Stable';
         if (usageRate > 0 && currentRemaining > 0) {
@@ -430,13 +430,13 @@ export class AppViewModel implements vscode.Disposable {
 
     private buildDisplayItems(groups: QuotaGroupState[]): QuotaDisplayItem[] {
         const config = this.configManager.getConfig();
-        const hiddenGroupId = config["1_dashboard.50_includeSecondaryModels"] ? null : 'gpt';
+        const hiddenGroupId = config["dashboard.includeSecondaryModels"] ? null : 'gpt';
 
         // Cache group order for sorting
         const strategyGroups = this.strategyManager.getGroups();
         const groupOrder = new Map(strategyGroups.map((g, i) => [g.id, i]));
 
-        if (config["1_dashboard.20_viewMode"] === 'models' && this._lastSnapshot) {
+        if (config["dashboard.viewMode"] === 'models' && this._lastSnapshot) {
             const models = this._lastSnapshot.models || [];
             const filteredModels = hiddenGroupId ? models.filter(m => this.strategyManager.getGroupForModel(m.modelId, m.label).id !== hiddenGroupId) : models;
 
@@ -564,7 +564,7 @@ export class AppViewModel implements vscode.Disposable {
      */
     getChartData(): UsageChartData {
         const config = this.configManager.getConfig();
-        const hiddenGroupId = config["1_dashboard.50_includeSecondaryModels"] ? null : 'gpt';
+        const hiddenGroupId = config["dashboard.includeSecondaryModels"] ? null : 'gpt';
 
         if (!hiddenGroupId) {
             return this._state.quota.chart;

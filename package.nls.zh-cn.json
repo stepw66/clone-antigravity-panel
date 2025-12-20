@@ -12,6 +12,7 @@
     "command.showDisclaimer.title": "关于",
     "command.restartLanguageServer.title": "重启 Agent 服务",
     "command.restartUserStatusUpdater.title": "重置状态更新",
+    "command.runDiagnostics.title": "运行连接诊断",
     "config.statusBarStyle.percentage": "显示剩余配额百分比（例如：75%）",
     "config.statusBarStyle.resetTime": "显示配额重置倒计时（例如：2小时30分）",
     "config.statusBarStyle.used": "显示已使用配额（例如：25/100）",

@@ -55,15 +55,15 @@ export class StatusBarManager implements vscode.Disposable {
         const cache = appState.cache;
 
         // Show if either quota or cache is enabled
-        if (config["2_status.10_showQuota"] || config["2_status.20_showCache"]) {
+        if (config["status.showQuota"] || config["status.showCache"]) {
             this.render(
                 statusData,
                 cache,
-                config["2_status.10_showQuota"],
-                config["2_status.20_showCache"],
-                config["2_status.30_displayFormat"],
-                config["2_status.40_warningThreshold"],
-                config["2_status.50_criticalThreshold"]
+                config["status.showQuota"],
+                config["status.showCache"],
+                config["status.displayFormat"],
+                config["status.warningThreshold"],
+                config["status.criticalThreshold"]
             );
         } else {
             this.item.hide();
@@ -75,7 +75,7 @@ export class StatusBarManager implements vscode.Disposable {
         cache: { totalSize: number } | null,
         showQuota: boolean,
         showCache: boolean,
-        statusBarStyle: TfaConfig['2_status.30_displayFormat'],
+        statusBarStyle: TfaConfig['status.displayFormat'],
         warningThreshold: number,
         criticalThreshold: number
     ): void {
@@ -122,10 +122,27 @@ export class StatusBarManager implements vscode.Disposable {
 
     private formatQuotaDisplay(
         group: StatusBarGroupItem,
-        style: TfaConfig['2_status.30_displayFormat']
+        style: TfaConfig['status.displayFormat']
     ): string {
-        const val = style === 'used' ? (100 - group.percentage) : group.percentage;
-        return `${group.shortLabel} ${val}%`;
+        switch (style) {
+            case 'resetTime':
+                // Display time until reset, e.g., "Flash 2h 30m" or "Flash Ready"
+                return `${group.shortLabel} ${group.resetTime}`;
+
+            case 'used':
+                // Display used amount formatted as fraction (e.g., "25/100")
+                // Since API provides percentage, we map 1% to 1 unit of 100
+                return `${group.shortLabel} ${100 - group.percentage}/100`;
+
+            case 'remaining':
+                // Display remaining amount formatted as fraction (e.g., "75/100")
+                return `${group.shortLabel} ${group.percentage}/100`;
+
+            case 'percentage':
+            default:
+                // Default: display remaining percentage
+                return `${group.shortLabel} ${group.percentage}%`;
+        }
     }
 
     private getBackgroundColor(

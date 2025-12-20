@@ -15,6 +15,7 @@
 [![下载量](https://img.shields.io/open-vsx/dt/n2ns/antigravity-panel?style=flat&cacheSeconds=10800)](https://open-vsx.org/extension/n2ns/antigravity-panel)
 [![最后更新](https://img.shields.io/github/last-commit/n2ns/antigravity-panel?style=flat&label=最后更新&cacheSeconds=10800)](https://github.com/n2ns/antigravity-panel/commits/main)
 
+
 **Toolkit for Antigravity**（原名 *Antigravity Panel*）帮助你掌控 **Google Antigravity IDE** 中的 AI 模型使用情况。实时配额监控、用量趋势分析、缓存管理——一切均可在一个集成的侧边栏面板中完成。
 
 > **📢 注意：** 我们已从 "Antigravity Panel" 更名为 "**Toolkit for Antigravity**"，以更好地反映我们构建全面生态系统工具套件的愿景。同样强大的功能，更精准的定位！

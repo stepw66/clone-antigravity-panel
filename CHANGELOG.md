@@ -11,6 +11,11 @@ English | [中文文档](docs/CHANGELOG_zh.md)
 ### Added
 - **Service Recovery UI**: Added dedicated "Restart Service" and "Reset Status" buttons in the sidebar for quick troubleshooting of Agent unresponsiveness and quota sync issues.
 
+### Fixed
+- **Status Bar Display**: Fixed `resetTime` not updating and `used`/`remaining` formats always showing as percentage. They now correctly display time (e.g., "2h 30m") and fractional values (e.g., "25/100") [Fixes #9].
+- **Localization Loading**: Fixed an issue where localized strings (`report.*`) were missing in automated bug reports due to a packaging error in v2.2.0 [Fixes #5, #8].
+- **Test Coverage**: Added automated tests to ensure localization integrity and status bar format correctness.
+
 ## [2.2.0] - 2025-12-18
 
 ### Added

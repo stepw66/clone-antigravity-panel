@@ -22,15 +22,15 @@ export class FeedbackManager {
     public static getFeedbackUrl(meta: DiagnosticMetadata): vscode.Uri {
         const title = encodeURIComponent(`[REPORT-AUTO] ${meta.reason} - ${meta.version}`);
 
-        let diagInfo = `**${vscode.l10n.t("report.title")}**\n`;
-        diagInfo += `- **${vscode.l10n.t("report.version")}**: ${meta.version}\n`;
-        diagInfo += `- **${vscode.l10n.t("report.os")}**: ${meta.platform} (${meta.arch})\n`;
-        diagInfo += `- **${vscode.l10n.t("report.error_code")}**: ${meta.reason}\n`;
-        if (meta.candidateCount !== undefined) diagInfo += `- **${vscode.l10n.t("report.candidate_count")}**: ${meta.candidateCount}\n`;
-        if (meta.parsingInfo) diagInfo += `- **${vscode.l10n.t("report.parsing_info")}**: ${meta.parsingInfo}\n`;
+        let diagInfo = `**${vscode.l10n.t("Diagnostic System Information (Auto-generated)")}**\n`;
+        diagInfo += `- **${vscode.l10n.t("Extension Version")}**: ${meta.version}\n`;
+        diagInfo += `- **${vscode.l10n.t("Operating System")}**: ${meta.platform} (${meta.arch})\n`;
+        diagInfo += `- **${vscode.l10n.t("Error Code")}**: ${meta.reason}\n`;
+        if (meta.candidateCount !== undefined) diagInfo += `- **${vscode.l10n.t("Candidate Process Count")}**: ${meta.candidateCount}\n`;
+        if (meta.parsingInfo) diagInfo += `- **${vscode.l10n.t("Parsing Details")}**: ${meta.parsingInfo}\n`;
 
         const body = encodeURIComponent(
-            `${vscode.l10n.t("report.description_placeholder")}\n${diagInfo}`
+            `${vscode.l10n.t("**Problem Description**\n(Please briefly describe the situation under which this problem occurred, e.g., did you just upgrade the IDE?)\n\n---")}\n${diagInfo}`
         );
 
         const url = `${this.GITHUB_ISSUES_URL}?title=${title}&body=${body}&labels=bug,auto-report`;
@@ -41,7 +41,7 @@ export class FeedbackManager {
      * Common helper to show a standard error notification with functional feedback button.
      */
     public static async showFeedbackNotification(message: string, meta: DiagnosticMetadata): Promise<void> {
-        const btnLabel = vscode.l10n.t("button.feedback");
+        const btnLabel = vscode.l10n.t("Feedback");
         const selection = await vscode.window.showWarningMessage(message, btnLabel);
         if (selection === btnLabel) {
             const url = this.getFeedbackUrl(meta);

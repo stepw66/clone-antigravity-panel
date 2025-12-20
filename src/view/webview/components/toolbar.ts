@@ -19,13 +19,13 @@ export class AppToolbar extends LitElement {
   protected render() {
     return html`
       <div class="toolbar">
-        <button class="toolbar-btn" @click=${() => this._postMessage('openRules')}>
+        <button class="toolbar-btn primary" @click=${() => this._postMessage('openRules')}>
           <i class="codicon codicon-symbol-ruler"></i>Rules
         </button>
-        <button class="toolbar-btn" @click=${() => this._postMessage('openMcp')}>
+        <button class="toolbar-btn primary" @click=${() => this._postMessage('openMcp')}>
           <i class="codicon codicon-plug"></i>MCP
         </button>
-        <button class="toolbar-btn" @click=${() => this._postMessage('openBrowserAllowlist')}>
+        <button class="toolbar-btn primary" @click=${() => this._postMessage('openBrowserAllowlist')}>
           <i class="codicon codicon-globe"></i>Allowlist
         </button>
       </div>

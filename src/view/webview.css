@@ -154,6 +154,10 @@ quota-pie {
   margin-top: -6px;
 }
 
+.style-semi-arc .gauge-reset-inner {
+  margin-top: 4px;
+}
+
 .gauge-center-text {
   position: absolute;
   top: 50%;
@@ -307,6 +311,15 @@ quota-pie {
 
 .toolbar-btn:hover {
   background: var(--vscode-button-secondaryHoverBackground);
+}
+
+.toolbar-btn.primary {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+
+.toolbar-btn.primary:hover {
+  background: var(--vscode-button-hoverBackground);
 }
 
 /* 区块标题样式 */
@@ -545,32 +558,13 @@ quota-pie {
   font-size: 16px;
 }
 
-/* Datafrog Branding Footer */
-.branding-footer {
-  padding: 8px;
-  text-align: center;
-  font-size: 0.75em;
-  opacity: 0.5;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  user-select: none;
-  border-top: 1px solid var(--vscode-widget-border);
-  background: var(--vscode-sideBar-background);
-}
 
-.branding-footer:hover {
-  opacity: 0.9;
-}
-
-.branding-footer span {
-  font-weight: 600;
-  color: var(--vscode-textLink-foreground);
-}
 
 /* Recovery Actions */
 .recovery-actions {
   margin-top: auto;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 10px 12px;
   background: var(--vscode-sideBar-background);
@@ -578,7 +572,7 @@ quota-pie {
 }
 
 .recovery-btn {
-  flex: 1;
+  flex: 1 1 130px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -195,12 +195,7 @@ export class SidebarApp extends LitElement {
     });
   }
 
-  private _onVisitWebsite(): void {
-    this._vscode.postMessage({
-      type: 'openUrl',
-      path: 'https://datafrog.io'
-    });
-  }
+
 
   // ==================== 渲染 ====================
 
@@ -235,13 +230,13 @@ export class SidebarApp extends LitElement {
       ></folder-tree>
 
       <div class="recovery-actions">
-        <button class="recovery-btn primary" @click=${() => this._vscode.postMessage({ type: 'restartLanguageServer' })} title="Restart Antigravity Agent Service (Fix Terminal/AI)">
+        <button class="recovery-btn primary" @click=${() => this._vscode.postMessage({ type: 'restartLanguageServer' })} title=${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.restartService || "Restart Service"}>
           <i class="codicon codicon-sync"></i>
-          <span>Restart Service</span>
+          <span>${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.restartService || "Restart Service"}</span>
         </button>
-        <button class="recovery-btn" @click=${() => this._vscode.postMessage({ type: 'restartUserStatusUpdater' })} title="Reset User Status Updater (Fix Quota/Sync)">
+        <button class="recovery-btn primary" @click=${() => this._vscode.postMessage({ type: 'restartUserStatusUpdater' })} title=${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.resetStatus || "Reset Status"}>
           <i class="codicon codicon-refresh"></i>
-          <span>Reset Status</span>
+          <span>${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.resetStatus || "Reset Status"}</span>
         </button>
       </div>
 
@@ -256,9 +251,7 @@ export class SidebarApp extends LitElement {
         </button>
       </div>
 
-      <div class="branding-footer" @click=${this._onVisitWebsite}>
-        Managed by <span>Datafrog LLC</span>
-      </div>
+
     `;
   }
 }

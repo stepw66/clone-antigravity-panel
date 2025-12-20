@@ -126,7 +126,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider, vscode.Dispo
         // Get READ-ONLY view model data -> purely for display
         const data = this._viewModel.getSidebarData();
         const config = vscode.workspace.getConfiguration('tfa');
-        data.gaugeStyle = config.get('1_dashboard.10_gaugeStyle', 'semi-arc');
+        data.gaugeStyle = config.get('dashboard.gaugeStyle', 'semi-arc');
 
         this._view.webview.postMessage({ type: 'update', payload: data });
     }
@@ -148,8 +148,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider, vscode.Dispo
         this._view.webview.html = new WebviewHtmlBuilder()
             .setHead(cspSource, codiconsUri.toString(), stylesUri.toString(), webviewUri.toString())
             .setTranslations({
-                reportIssue: vscode.l10n.t('footer.reportIssue'),
-                projectHome: vscode.l10n.t('footer.projectHome')
+                reportIssue: vscode.l10n.t('Report Issue'),
+                projectHome: vscode.l10n.t('Project Home'),
+                restartService: vscode.l10n.t('Restart Service'),
+                resetStatus: vscode.l10n.t('Reset Status')
             })
             .build();
     }

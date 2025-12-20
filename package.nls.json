@@ -12,6 +12,7 @@
     "command.showDisclaimer.title": "About",
     "command.restartLanguageServer.title": "Restart Agent Service",
     "command.restartUserStatusUpdater.title": "Reset Status",
+    "command.runDiagnostics.title": "Run Connectivity Diagnostics",
     "config.statusBarStyle.percentage": "Show remaining quota as percentage (e.g., 75%)",
     "config.statusBarStyle.resetTime": "Show time until quota reset (e.g., 2h 30m)",
     "config.statusBarStyle.used": "Show used quota amount (e.g., 25/100)",

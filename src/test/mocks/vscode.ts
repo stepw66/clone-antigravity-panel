@@ -58,9 +58,25 @@ export class EventEmitter<T> implements Disposable {
   }
 }
 
+export enum StatusBarAlignment {
+  Left = 1,
+  Right = 2
+}
+
 export const window = {
   createOutputChannel(name: string): OutputChannel {
     return new MockOutputChannel();
+  },
+  createStatusBarItem(alignment?: StatusBarAlignment, priority?: number): any {
+    return {
+      text: '',
+      tooltip: '',
+      show: () => { },
+      hide: () => { },
+      dispose: () => { },
+      backgroundColor: undefined,
+      command: undefined
+    };
   },
   showInformationMessage(message: string, ...items: any[]): Thenable<any> {
     return Promise.resolve();
@@ -113,4 +129,11 @@ export const workspace = {
     get: (key: string, defaultValue?: any) => defaultValue,
     update: (key: string, value: any) => Promise.resolve()
   })
+};
+
+export const l10n = {
+  t: (options: string | { message: string }) => {
+    if (typeof options === 'string') return options;
+    return options.message;
+  }
 };

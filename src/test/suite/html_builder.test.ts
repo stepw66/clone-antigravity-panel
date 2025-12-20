@@ -121,6 +121,31 @@ suite('WebviewHtmlBuilder Test Suite', () => {
     });
   });
 
+  suite('setTranslations', () => {
+    test('should correctly inject translations into script tag', () => {
+      const translations = {
+        key1: 'Value 1',
+        key2: 'Value 2'
+      };
+
+      const html = new WebviewHtmlBuilder()
+        .setHead(testCspSource, testCodiconsUri, testStylesUri, testWebviewUri)
+        .setTranslations(translations)
+        .build();
+
+      assert.ok(html.includes('window.__TRANSLATIONS__ = {"key1":"Value 1","key2":"Value 2"};'), 'Should serialize translations');
+    });
+
+    test('should handle empty translations', () => {
+      const html = new WebviewHtmlBuilder()
+        .setHead(testCspSource, testCodiconsUri, testStylesUri, testWebviewUri)
+        .setTranslations({})
+        .build();
+
+      assert.ok(html.includes('window.__TRANSLATIONS__ = {};'), 'Should handle empty translation object');
+    });
+  });
+
   suite('setHead', () => {
     test('should return this for chaining', () => {
       const builder = new WebviewHtmlBuilder();

@@ -61,7 +61,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // 1. Initialize Core & Configuration
   const configReader = new VscodeConfigReader();
   const configManager = new ConfigManager(configReader);
-  setDebugMode(configManager.get('3_system.99_debugMode', false));
+  setDebugMode(configManager.get('system.debugMode', false));
   context.subscriptions.push(configReader);
 
   // 2. Initialize Model Services
@@ -101,11 +101,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       await appViewModel.refreshQuota();
       // Final check for parsing errors if no higher-level notification was shown
       if (!hasShownNotification && quotaService.parsingError) {
-        let message = vscode.l10n.t("notification.parsing_error");
+        let message = vscode.l10n.t("Server data parsing error detected, some features limited");
 
         // If it's an auth failure during quota fetch, show the login message
         if (quotaService.parsingError.startsWith('AUTH_FAILED')) {
-          message = vscode.l10n.t("notification.login_required");
+          message = vscode.l10n.t("Please ensure you are logged into Antigravity IDE (Authentication failed).");
         }
 
         await FeedbackManager.showFeedbackNotification(message, {
@@ -123,10 +123,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       const attempts = processFinder.attemptDetails;
 
       const messages: Record<string, string> = {
-        'no_process': vscode.l10n.t("notification.no_process"),
-        'ambiguous': vscode.l10n.t("notification.ambiguous"),
-        'no_port': vscode.l10n.t("notification.no_port"),
-        'auth_failed': vscode.l10n.t("notification.auth_failed")
+        'no_process': vscode.l10n.t("Local server not found"),
+        'ambiguous': vscode.l10n.t("Local server not found, unable to get quota reference"),
+        'no_port': vscode.l10n.t("Server process found but no listening port detected"),
+        'auth_failed': vscode.l10n.t("Handshake with server failed (CSRF check failed)")
       };
 
       let message = messages[reason];
@@ -134,7 +134,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
       // Smart decision: If it's a single server but auth failed, it's likely a login issue
       if (reason === 'auth_failed' && count === 1) {
-        message = vscode.l10n.t("notification.login_required");
+        message = vscode.l10n.t("Please ensure you are logged into Antigravity IDE (Authentication failed).");
       }
 
       // Collect useful diagnostic info only
@@ -188,7 +188,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // Polling: Quota Refresh
   scheduler.register({
     name: "refreshQuota",
-    interval: config.pollingInterval * 1000,
+    interval: config['dashboard.refreshRate'] * 1000,
     execute: () => appViewModel.refreshQuota(),
     immediate: false, // Already did initial refresh
   });
@@ -196,13 +196,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // Polling: Cache Check (for warnings)
   scheduler.register({
     name: "checkCache",
-    interval: config.cacheCheckInterval * 1000,
+    interval: config['system.scanInterval'] * 1000,
     execute: async () => {
       // Check cache size threshold logic here or move to VM?
       // For now, let's keep simple check in extension or move to VM 'checkWarnings'
       const state = appViewModel.getState();
       const cacheMB = state.cache.totalSize / (1024 * 1024);
-      if (cacheMB > config.cacheWarningThreshold) {
+      if (cacheMB > config['system.cacheWarningSize']) {
         const lastWarned = storageService.getLastCacheWarningTime();
         const now = Date.now();
         if (!lastWarned || now - lastWarned > 24 * 3600 * 1000) {
@@ -224,9 +224,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   // Config listener to update scheduler
   configReader.onConfigChange((newConfig) => {
-    scheduler.updateInterval("refreshQuota", newConfig.pollingInterval * 1000);
-    scheduler.updateInterval("checkCache", newConfig.cacheCheckInterval * 1000);
-    setDebugMode(newConfig.debugMode);
+    scheduler.updateInterval("refreshQuota", newConfig['dashboard.refreshRate'] * 1000);
+    scheduler.updateInterval("checkCache", newConfig['system.scanInterval'] * 1000);
+    setDebugMode(newConfig['system.debugMode']);
 
     // Also trigger a refresh on config change to update UI view modes
     appViewModel.onConfigurationChanged();
@@ -265,13 +265,68 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       vscode.window.showInformationMessage(`Cache size: ${state.cache.formattedTotal}`);
     }),
     vscode.commands.registerCommand("tfa.openSettings", () => {
-      vscode.commands.executeCommand("workbench.action.openSettings", "tfa");
+      vscode.commands.executeCommand("workbench.action.openSettings", "@ext:n2ns.antigravity-panel");
     }),
     vscode.commands.registerCommand("tfa.showDisclaimer", async () => {
       const isZh = vscode.env.language.startsWith('zh');
       const fileName = isZh ? "DISCLAIMER_zh.md" : "DISCLAIMER.md";
       const url = `https://github.com/n2ns/antigravity-panel/blob/main/${fileName}`;
       await vscode.env.openExternal(vscode.Uri.parse(url));
+    }),
+    vscode.commands.registerCommand("tfa.runDiagnostics", async () => {
+      await vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: vscode.l10n.t("Running Connectivity Diagnostics..."),
+        cancellable: false
+      }, async () => {
+        const finder = new ProcessFinder();
+        const start = Date.now();
+
+        // Use default detect (with retries) but for diagnostics, 
+        // we might want to see the steps
+        infoLog("Diagnostic run started...");
+        const result = await finder.detect({ verbose: true });
+        const duration = ((Date.now() - start) / 1000).toFixed(1);
+
+        const reason = finder.failureReason;
+        const count = finder.candidateCount;
+        const attempts = finder.attemptDetails;
+
+        let summary = "";
+        if (result) {
+          summary = vscode.l10n.t("✅ Success: Connection established on port {0} (CSRF: {1})", result.port, result.csrfToken.substring(0, 8) + '...');
+        } else {
+          const reasonMap: Record<string, string> = {
+            'no_process': vscode.l10n.t("No server process found."),
+            'ambiguous': vscode.l10n.t("Multiple servers found but none belong to this IDE instance."),
+            'no_port': vscode.l10n.t("Process found but no listening port detected."),
+            'auth_failed': vscode.l10n.t("Handshake failed (possible login issue).")
+          };
+          summary = `❌ ${reasonMap[reason || 'unknown'] || vscode.l10n.t("Detection failed")}`;
+        }
+
+        const detailMsg = vscode.l10n.t("Found {0} candidates. Duration: {1}s.", count, duration);
+        const fullMsg = `${summary}\n\n${detailMsg}`;
+
+        const detailsBtn = vscode.l10n.t("Show Details");
+        const selection = await vscode.window.showInformationMessage(fullMsg, { modal: true }, detailsBtn);
+
+        if (selection === detailsBtn) {
+          const outputChannel = vscode.window.createOutputChannel("TFA Diagnostics");
+          outputChannel.appendLine(`--- TFA Connectivity Diagnostics ---`);
+          outputChannel.appendLine(`Time: ${new Date().toISOString()}`);
+          outputChannel.appendLine(`Result: ${result ? "SUCCESS" : "FAILED"}`);
+          outputChannel.appendLine(`Reason: ${reason || "N/A"}`);
+          outputChannel.appendLine(`Candidates: ${count}`);
+          outputChannel.appendLine(`Duration: ${duration}s`);
+          outputChannel.appendLine(``);
+          outputChannel.appendLine(`Attempts:`);
+          attempts.forEach((a, i) => {
+            outputChannel.appendLine(`[${i + 1}] PID:${a.pid} Port:${a.port} Status:${a.statusCode || 'Failed'}${a.error ? ` Err:${a.error}` : ''}`);
+          });
+          outputChannel.show();
+        }
+      });
     })
   );
 
