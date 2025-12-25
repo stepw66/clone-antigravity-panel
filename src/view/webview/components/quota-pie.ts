@@ -1,5 +1,5 @@
 /**
- * QuotaPie - 配额饼图组件 (Light DOM)
+ * QuotaPie - Quota pie chart component (Light DOM)
  */
 
 import { LitElement } from 'lit';
@@ -17,7 +17,7 @@ export class QuotaPie extends LitElement {
 
   @property({ type: String }) gaugeStyle: string = 'semi-arc';
 
-  // Light DOM 模式
+  // Light DOM mode
   createRenderRoot() { return this; }
 
   protected render() {

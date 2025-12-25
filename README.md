@@ -6,7 +6,7 @@ English | [中文文档](README_zh.md)
 
 > Monitor your AI quota usage and manage cache with ease
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat&cacheSeconds=10800)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![VS Code](https://img.shields.io/badge/VS%20Code-%3E%3D1.104.0-007ACC?logo=visual-studio-code&style=flat&cacheSeconds=10800)](https://code.visualstudio.com/)
 
 [![Version](https://img.shields.io/github/v/release/n2ns/antigravity-panel?style=flat&label=version&cacheSeconds=10800)](https://marketplace.visualstudio.com/items?itemName=n2ns.antigravity-panel)
@@ -31,7 +31,9 @@ English | [中文文档](README_zh.md)
 
 ## 📸 Screenshots
 
-![Toolkit Interface](assets/preview.png)
+| | |
+|:---:|:---:|
+| ![Quota Dashboard](assets/preview1.png) | ![Usage Analytics](assets/preview2.png) |\r\n| ![Cache Management](assets/preview3.png) | ![Settings & Config](assets/preview4.png) |
 
 *Real-time quota monitoring, usage trends, and cache management in one place*
 
@@ -40,9 +42,9 @@ English | [中文文档](README_zh.md)
 ### 📊 Smart Quota Monitoring
 
 **See your AI usage at a glance**
-- Visual quota display grouped by model families (Gemini, Claude, GPT, etc.)
+- Visual quota display grouped by AI model groups (Gemini, Claude, GPT, etc.)
 - Status bar shows remaining quota with emoji indicators (🟢🟡🔴) and cache size
-- Hover tooltip with Markdown table showing all model quotas and reset times
+- Hover tooltip showing all model quotas and reset times
 - Configurable warning (≤30%) and critical (≤10%) thresholds
 
 ### 📈 Usage Trends & Analytics
@@ -50,7 +52,7 @@ English | [中文文档](README_zh.md)
 **Understand your consumption patterns**
 - Interactive bar charts showing usage over time (10-120 minutes)
 - 24-hour history tracking with persistent storage
-- Color-coded visualization by model family
+- Color-coded visualization by AI model group
 - 🔥 **Usage Rate**: Real-time consumption speed (%/hour)
 - ⏱️ **Runway Prediction**: Estimated time until quota exhaustion
 
@@ -86,7 +88,7 @@ English | [中文文档](README_zh.md)
 - ✅ Linux
 
 **Multi-language UI**
-- English, 简体中文, 繁體中文, 日本語, Français, Deutsch, Español, Português (Brasil), Italiano, 한국어, Русский
+- English, 简体中文, 繁體中文, 日本語, Français, Deutsch, Español, Português (Brasil), Italiano, 한국어, Русский, Polski, Türkçe
 
 ## 📦 Installation
 
@@ -210,10 +212,8 @@ For major changes, please open an issue first to discuss your ideas.
 
 ## 📄 License
 
-Licensed under the [GNU General Public License v3.0](LICENSE). 
+Licensed under the [Apache License, Version 2.0](LICENSE).
 
-**Personal & Educational Use**: 100% Free.
-**Enterprise & Commercial Integration**: Please contact Datafrog LLC for commercial licensing if you wish to integrate this technology into proprietary products.
 
 ---
 

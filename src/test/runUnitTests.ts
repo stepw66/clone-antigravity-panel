@@ -1,8 +1,8 @@
 /**
- * 纯 Mocha 测试运行器 - 不需要 VS Code 环境
- * 用于运行所有单元测试（不启动 VS Code Extension Host）
+ * Pure Mocha test runner - no VS Code environment required
+ * Runs all unit tests (without launching VS Code Extension Host)
  *
- * 所有测试都使用 Mock 对象，不依赖真实的 VS Code API
+ * All tests use mock objects, no dependency on real VS Code API
  */
 import Mocha from 'mocha';
 import * as path from 'path';
@@ -33,7 +33,7 @@ async function run(): Promise<void> {
     const testsRoot = __dirname;
 
     try {
-        // 运行所有测试文件 (包含子目录)
+        // Run all test files (including subdirectories)
         const files = await glob('suite/**/*.test.js', { cwd: testsRoot });
 
         if (files.length === 0) {

@@ -1,5 +1,5 @@
 /**
- * FolderNode - 文件夹节点组件 (Light DOM)
+ * FolderNode - Folder node component (Light DOM)
  */
 
 import { LitElement, html, nothing } from 'lit';
@@ -25,7 +25,7 @@ export class FolderNode extends LitElement {
   @property({ type: Boolean })
   expanded = false;
 
-  // Light DOM 模式
+  // Light DOM mode
   createRenderRoot() { return this; }
 
   private _onFolderClick(): void {
@@ -59,15 +59,15 @@ export class FolderNode extends LitElement {
       </div>
       ${this.expanded ? html`
         <div class="files-container">
-          ${this.files.length > 0 
-            ? this.files.map(file => html`
+          ${this.files.length > 0
+          ? this.files.map(file => html`
                 <file-item 
                   .name=${file.name}
                   .path=${file.path}
                 ></file-item>
               `)
-            : nothing
-          }
+          : nothing
+        }
         </div>
       ` : nothing}
     `;

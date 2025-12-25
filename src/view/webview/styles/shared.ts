@@ -1,11 +1,11 @@
 /**
- * 全局样式
+ * Global styles
  * 
- * Light DOM 模式：所有样式直接注入到主文档
+ * Light DOM mode: All styles are injected directly into the main document
  */
 
 export const globalStyles = `
-/* ==================== 通用样式 ==================== */
+/* ==================== Common Styles ==================== */
 
 .codicon {
   display: inline-flex;
@@ -23,7 +23,7 @@ export const globalStyles = `
   to { transform: rotate(360deg); }
 }
 
-/* ==================== 饼图样式 ==================== */
+/* ==================== Pie Chart Styles ==================== */
 
 .quota-pie {
   flex: 1;
@@ -56,7 +56,7 @@ export const globalStyles = `
   color: var(--vscode-descriptionForeground);
 }
 
-/* ==================== 仪表盘样式 ==================== */
+/* ==================== Dashboard Styles ==================== */
 
 .pies-container {
   display: flex;
@@ -66,7 +66,7 @@ export const globalStyles = `
   border-bottom: 1px solid var(--vscode-widget-border);
 }
 
-/* ==================== 柱状图样式 ==================== */
+/* ==================== Bar Chart Styles ==================== */
 
 .usage-chart {
   padding: 8px 12px;
@@ -105,7 +105,7 @@ export const globalStyles = `
   align-items: center;
 }
 
-/* ==================== 工具栏样式 ==================== */
+/* ==================== Toolbar Styles ==================== */
 
 .toolbar {
   display: flex;
@@ -135,7 +135,7 @@ export const globalStyles = `
   background: var(--vscode-button-secondaryHoverBackground);
 }
 
-/* ==================== 区块标题样式 ==================== */
+/* ==================== Section Header Styles ==================== */
 
 .section-header {
   display: flex;
@@ -200,7 +200,7 @@ export const globalStyles = `
   text-align: center;
 }
 
-/* ==================== 文件夹节点样式 ==================== */
+/* ==================== Folder Node Styles ==================== */
 
 .folder {
   cursor: pointer;
@@ -245,7 +245,7 @@ export const globalStyles = `
   padding-left: 8px;
 }
 
-/* ==================== 文件项样式 ==================== */
+/* ==================== File Item Styles ==================== */
 
 .file {
   padding: 3px 8px 3px 32px;
@@ -324,13 +324,13 @@ export const globalStyles = `
 `;
 
 /**
- * 根据文件名获取对应的 codicon 图标类
+ * Get the codicon icon class for a file based on its name
  */
 export function getFileIcon(filename: string): string {
   const ext = filename.split('.').pop()?.toLowerCase() || '';
-  
+
   const iconMap: Record<string, string> = {
-    // 图片 - 使用 symbol-color (调色板图标)
+    // Images - use symbol-color (palette icon)
     'png': 'codicon-symbol-color',
     'jpg': 'codicon-symbol-color',
     'jpeg': 'codicon-symbol-color',
@@ -338,8 +338,8 @@ export function getFileIcon(filename: string): string {
     'svg': 'codicon-symbol-color',
     'webp': 'codicon-symbol-color',
     'ico': 'codicon-symbol-color',
-    
-    // 代码
+
+    // Code
     'ts': 'codicon-file-code',
     'tsx': 'codicon-file-code',
     'js': 'codicon-file-code',
@@ -361,15 +361,15 @@ export function getFileIcon(filename: string): string {
     'less': 'codicon-file-code',
     'html': 'codicon-file-code',
     'vue': 'codicon-file-code',
-    
-    // 文档
+
+    // Documents
     'md': 'codicon-markdown',
     'txt': 'codicon-file-text',
     'pdf': 'codicon-file-pdf',
     'doc': 'codicon-file-text',
     'docx': 'codicon-file-text',
-    
-    // 配置
+
+    // Configuration
     'json': 'codicon-json',
     'yaml': 'codicon-file-code',
     'yml': 'codicon-file-code',
@@ -377,26 +377,26 @@ export function getFileIcon(filename: string): string {
     'toml': 'codicon-file-code',
     'ini': 'codicon-file-code',
     'env': 'codicon-file-code',
-    
-    // 压缩包
+
+    // Archives
     'zip': 'codicon-file-zip',
     'tar': 'codicon-file-zip',
     'gz': 'codicon-file-zip',
     'rar': 'codicon-file-zip',
     '7z': 'codicon-file-zip',
-    
-    // 其他
+
+    // Other
     'log': 'codicon-output',
     'sh': 'codicon-terminal',
     'bat': 'codicon-terminal',
     'ps1': 'codicon-terminal',
   };
-  
+
   return iconMap[ext] || 'codicon-file';
 }
 
 /**
- * 获取图标颜色类
+ * Get icon color class
  */
 export function getFileIconColorClass(iconClass: string): string {
   if (iconClass === 'codicon-symbol-color') return 'file-icon-media';

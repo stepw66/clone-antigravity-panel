@@ -1,5 +1,5 @@
 /**
- * Toolbar - 工具栏组件 (Light DOM)
+ * Toolbar - Toolbar component (Light DOM)
  */
 
 import { LitElement, html } from 'lit';

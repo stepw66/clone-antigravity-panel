@@ -1,5 +1,5 @@
 /**
- * FileItem - 文件项组件 (Light DOM)
+ * FileItem - File item component (Light DOM)
  */
 
 import { LitElement, html } from 'lit';
@@ -17,7 +17,7 @@ export class FileItemComponent extends LitElement {
   @property({ type: Boolean, reflect: true })
   selected = false;
 
-  // Light DOM 模式
+  // Light DOM mode
   createRenderRoot() { return this; }
 
   private _onClick(e: Event): void {
@@ -46,7 +46,7 @@ export class FileItemComponent extends LitElement {
 
   protected render() {
     const selectedClass = this.selected ? 'selected' : '';
-    
+
     return html`
       <div class="file ${selectedClass}" @click=${this._onClick}>
         <i class="${this._getIconClass()}"></i>

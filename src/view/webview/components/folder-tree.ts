@@ -1,5 +1,5 @@
 /**
- * FolderTree - 通用目录树组件 (Light DOM)
+ * FolderTree - Generic folder tree component (Light DOM)
  */
 
 import { LitElement, html } from 'lit';
@@ -28,7 +28,7 @@ export class FolderTree extends LitElement {
   @property({ type: String })
   emptyText = 'No items found';
 
-  // Light DOM 模式
+  // Light DOM mode
   createRenderRoot() { return this; }
 
   private _onHeaderClick(): void {

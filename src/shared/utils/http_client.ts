@@ -52,34 +52,34 @@ function setCachedProtocol(hostname: string, port: number, protocol: Protocol): 
 }
 
 /**
- * 发送 HTTP/HTTPS 请求（支持自动降级）
+ * Send HTTP/HTTPS request (with automatic fallback)
  */
 export async function httpRequest<T>(options: HttpRequestOptions): Promise<HttpResponse<T>> {
   const { hostname, port, allowFallback = true } = options;
 
-  // 检查缓存的协议
+  // Check cached protocol
   const cachedProtocol = getCachedProtocol(hostname, port);
 
-  // 如果缓存是 HTTP，直接使用 HTTP
+  // If cached is HTTP, use HTTP directly
   if (cachedProtocol === "http") {
     return doRequest<T>(options, "http");
   }
 
-  // 尝试 HTTPS
+  // Try HTTPS
   try {
     return await doRequest<T>(options, "https");
   } catch (httpsError) {
-    // HTTPS 失败，尝试 HTTP 降级
+    // HTTPS failed, try HTTP fallback
     if (allowFallback) {
       debugLog(`HTTPS failed for ${hostname}:${port}, trying HTTP fallback...`);
       try {
         const result = await doRequest<T>(options, "http");
-        // HTTP 成功，缓存协议
+        // HTTP succeeded, cache protocol
         setCachedProtocol(hostname, port, "http");
         debugLog(`HTTP fallback succeeded for ${hostname}:${port}`);
         return result;
       } catch {
-        // HTTP 也失败，抛出原始 HTTPS 错误
+        // HTTP also failed, throw original HTTPS error
         throw httpsError;
       }
     }
@@ -88,7 +88,7 @@ export async function httpRequest<T>(options: HttpRequestOptions): Promise<HttpR
 }
 
 /**
- * 发送单次请求
+ * Send a single request
  */
 function doRequest<T>(options: HttpRequestOptions, protocol: Protocol): Promise<HttpResponse<T>> {
   const { hostname, port, path, method, headers = {}, body, timeout = 5000 } = options;
@@ -158,7 +158,7 @@ function doRequest<T>(options: HttpRequestOptions, protocol: Protocol): Promise<
 }
 
 /**
- * 测试端口是否可用（HTTPS 优先，自动降级）
+ * Test if port is available (HTTPS first, with automatic fallback)
  */
 export async function testPort(
   hostname: string,
@@ -190,7 +190,7 @@ export async function testPort(
 }
 
 /**
- * 清除协议缓存（用于测试或重置）
+ * Clear protocol cache (for testing or reset)
  */
 export function clearProtocolCache(): void {
   protocolCache.clear();

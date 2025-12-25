@@ -12,7 +12,21 @@ body {
   margin: 0;
   color: var(--vscode-foreground);
   font-size: var(--vscode-font-size);
-  overflow-x: hidden;
+  overflow: hidden;
+  /* Disable body scroll */
+  height: 100%;
+  /* Full height */
+}
+
+html {
+  height: 100%;
+}
+
+sidebar-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Common styles */
@@ -88,138 +102,71 @@ quota-pie:hover {
 }
 
 
-/* Smart Alignment: Prevent tooltips from going off-screen on the edges */
+/* Smart Alignment: Controlled by JS via data-placement attribute */
 
-/* 1. Right Edge: Align to right and expand left */
-.credit-item:last-child[data-tooltip]::after,
-.gauge-container:last-child[data-tooltip]::after,
-quota-pie:last-child .gauge-container[data-tooltip]::after,
-.prediction-info span[data-tooltip]::after,
-.recovery-btn:last-child::after,
-.discussions-btn:last-child::after {
+/* Default (Center) - Defined above in [data-tooltip]::after */
+
+/* Right Placement: Tooltip aligns to the RIGHT edge of the element (grows LEFT) */
+[data-tooltip][data-placement="right"]::after {
   left: auto;
   right: 0;
   transform: translateY(4px);
 }
 
-.credit-item:last-child[data-tooltip]:hover::after,
-.gauge-container:last-child[data-tooltip]:hover::after,
-quota-pie:last-child .gauge-container[data-tooltip]:hover::after,
-.prediction-info span[data-tooltip]:hover::after,
-.recovery-btn:last-child:hover::after,
-.discussions-btn:last-child:hover::after {
+[data-tooltip][data-placement="right"]:hover::after {
   transform: translateY(0);
 }
 
-/* 2. Left Edge: Align to left and expand right */
-.credit-item:first-child[data-tooltip]::after,
-.gauge-container:first-child[data-tooltip]::after,
-quota-pie:first-child .gauge-container[data-tooltip]::after,
-.usage-legend span[data-tooltip]:first-child::after,
-.recovery-btn:first-child::after,
-.discussions-btn:first-child::after {
+[data-tooltip][data-placement="right"]::before {
+  left: auto;
+  right: 15px;
+  /* Arrow stays near the element center/right */
+  transform: translateX(0) translateY(4px);
+}
+
+[data-tooltip][data-placement="right"]:hover::before {
+  transform: translateY(0);
+}
+
+
+/* Left Placement: Tooltip aligns to the LEFT edge of the element (grows RIGHT) */
+[data-tooltip][data-placement="left"]::after {
   left: 0;
+  right: auto;
   transform: translateY(4px);
 }
 
-.credit-item:first-child[data-tooltip]:hover::after,
-.gauge-container:first-child[data-tooltip]:hover::after,
-quota-pie:first-child .gauge-container[data-tooltip]:hover::after,
-.usage-legend span[data-tooltip]:first-child:hover::after,
-.recovery-btn:first-child:hover::after,
-.discussions-btn:first-child:hover::after {
+[data-tooltip][data-placement="left"]:hover::after {
   transform: translateY(0);
 }
 
-/* 3. Arrow Positioning */
-/* Center Arrow (Default) */
-[data-tooltip]::before {
-  content: "";
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  border: 5px solid transparent;
-  border-top-color: var(--vscode-editorHoverWidget-border, #454545);
-  z-index: 1001;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  pointer-events: none;
-}
-
-[data-tooltip]:hover::before {
-  visibility: visible;
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* Dashboard Special: Arrow points UP and is on TOP of tooltip */
-.pies-container [data-tooltip]::before {
-  bottom: auto;
-  top: 100%;
-  border-top-color: transparent;
-  border-bottom-color: var(--vscode-editorHoverWidget-border, #454545);
-  transform: translateX(-50%) translateY(-4px);
-}
-
-.pies-container [data-tooltip]:hover::before {
-  transform: translateX(-50%) translateY(0);
-}
-
-/* Right Edge Arrow */
-.credit-item:last-child[data-tooltip]::before,
-.gauge-container:last-child[data-tooltip]::before,
-quota-pie:last-child .gauge-container[data-tooltip]::before,
-.prediction-info span[data-tooltip]::before,
-.recovery-btn:last-child::before,
-.discussions-btn:last-child::before {
-  left: auto;
-  right: 15px;
-  transform: translateX(0) translateY(4px);
-}
-
-
-.credit-item:last-child[data-tooltip]:hover::before,
-.gauge-container:last-child[data-tooltip]:hover::before,
-quota-pie:last-child .gauge-container:hover::before,
-quota-pie:last-child .gauge-container[data-tooltip]:hover::before,
-.prediction-info span[data-tooltip]:hover::before,
-.recovery-btn:last-child:hover::before,
-.discussions-btn:last-child:hover::before {
-  transform: translateY(0);
-}
-
-/* Left Edge Arrow */
-.credit-item:first-child[data-tooltip]::before,
-.gauge-container:first-child[data-tooltip]::before,
-quota-pie:first-child .gauge-container[data-tooltip]::before,
-.usage-legend span[data-tooltip]:first-child::before,
-.recovery-btn:first-child::before,
-.discussions-btn:first-child::before {
+[data-tooltip][data-placement="left"]::before {
   left: 15px;
+  /* Arrow stays near the element center/left */
+  right: auto;
   transform: translateX(0) translateY(4px);
 }
 
-.credit-item:first-child[data-tooltip]:hover::before,
-.gauge-container:first-child[data-tooltip]:hover::before,
-quota-pie:first-child .gauge-container:hover::before,
-quota-pie:first-child .gauge-container[data-tooltip]:hover::before,
-.usage-legend span[data-tooltip]:first-child:hover::before,
-.recovery-btn:first-child:hover::before,
-.discussions-btn:first-child:hover::before {
+[data-tooltip][data-placement="left"]:hover::before {
   transform: translateY(0);
 }
 
-/* Ensure consistent hover for flipped dashboard items */
-.pies-container .credit-item:last-child[data-tooltip]::after,
-.pies-container .gauge-container:last-child[data-tooltip]::after {
-  transform: translateX(0) translateY(-4px);
+
+/* Ensure consistent hover for flipped dashboard items (Top positioned tooltips) */
+.pies-container [data-tooltip][data-placement="right"]::after {
+  transform: translateY(-4px);
 }
 
-.pies-container .credit-item:first-child[data-tooltip]::after,
-.pies-container .gauge-container:first-child[data-tooltip]::after {
-  transform: translateX(0) translateY(-4px);
+.pies-container [data-tooltip][data-placement="right"]:hover::after {
+  transform: translateY(0);
+}
+
+.pies-container [data-tooltip][data-placement="left"]::after {
+  transform: translateY(-4px);
+}
+
+.pies-container [data-tooltip][data-placement="left"]:hover::after {
+  transform: translateY(0);
 }
 
 
@@ -776,10 +723,17 @@ quota-pie {
 }
 
 /* Footer styles */
-/* Footer styles */
+sidebar-footer {
+  display: block;
+  background: var(--vscode-sideBar-background);
+  border-top: 1px solid var(--vscode-widget-border);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+  /* Ensure it sits above scrollable content */
+}
+
 .sidebar-footer {
-  padding: 10px 8px;
-  /* Slightly tighter padding */
+  padding: 4px 8px 8px 8px;
+  /* Tighter top padding */
   background: var(--vscode-sideBar-background);
   border-top: 1px solid var(--vscode-widget-border);
   display: flex;
@@ -827,8 +781,11 @@ quota-pie {
   font-size: 0.72em;
   font-style: italic;
   color: var(--vscode-descriptionForeground);
-  padding: 8px 16px;
-  margin: 12px 12px 8px 12px;
+  padding: 4px 16px 12px;
+  opacity: 0.5;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
   background: rgba(0, 0, 0, 0.08);
   border-radius: 4px;
   box-shadow:
@@ -841,13 +798,13 @@ quota-pie {
 
 /* Recovery Actions */
 .recovery-actions {
-  margin-top: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 12px 12px 4px 12px;
+  /* Tighter bottom padding */
   background: var(--vscode-sideBar-background);
-  border-top: 1px solid var(--vscode-widget-border);
+  /* Border removed as it is now on the container */
 }
 
 .recovery-btn {

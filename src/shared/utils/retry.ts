@@ -1,29 +1,29 @@
 /**
- * 通用重试工具函数
- * 支持多种退避策略，与业务逻辑解耦
+ * Generic retry utility function
+ * Supports multiple backoff strategies, decoupled from business logic
  */
 
 export type BackoffStrategy = "fixed" | "linear" | "exponential";
 
 export interface RetryConfig<T> {
-  /** 最大尝试次数 (包括首次) */
+  /** Maximum number of attempts (including first) */
   attempts: number;
-  /** 基础延迟时间 (ms) */
+  /** Base delay time (ms) */
   baseDelay: number;
-  /** 最大延迟时间 (ms)，仅对 exponential 有效 */
+  /** Maximum delay time (ms), only effective for exponential */
   maxDelay?: number;
-  /** 退避策略: fixed=固定间隔, linear=线性增长, exponential=指数增长 */
+  /** Backoff strategy: fixed=fixed interval, linear=linear growth, exponential=exponential growth */
   backoff?: BackoffStrategy;
-  /** 自定义重试条件: 返回 true 表示需要重试 */
+  /** Custom retry condition: return true to retry */
   shouldRetry?: (result: T | null, error?: Error) => boolean;
-  /** 每次重试前的回调 (可用于日志) */
+  /** Callback before each retry (can be used for logging) */
   onRetry?: (attempt: number, delay: number) => void;
 }
 
 export type RetryOptions<T = unknown> = RetryConfig<T>;
 
 /**
- * 计算下次重试的延迟时间
+ * Calculate delay time for next retry
  */
 function calculateDelay(
   attempt: number,
@@ -35,11 +35,11 @@ function calculateDelay(
 
   switch (strategy) {
     case "linear":
-      // 线性增长: baseDelay, 2*baseDelay, 3*baseDelay...
+      // Linear growth: baseDelay, 2*baseDelay, 3*baseDelay...
       delay = baseDelay * attempt;
       break;
     case "exponential":
-      // 指数增长: baseDelay, 2*baseDelay, 4*baseDelay, 8*baseDelay...
+      // Exponential growth: baseDelay, 2*baseDelay, 4*baseDelay, 8*baseDelay...
       delay = baseDelay * Math.pow(2, attempt - 1);
       break;
     case "fixed":
@@ -51,25 +51,25 @@ function calculateDelay(
 }
 
 /**
- * 延迟执行
+ * Delay execution
  */
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
- * 对异步函数执行重试
+ * Execute retry on async function
  *
- * @param fn 要重试的异步函数
- * @param config 重试配置
- * @returns 成功的结果，或在所有尝试失败后返回 null
+ * @param fn Async function to retry
+ * @param config Retry configuration
+ * @returns Successful result, or null after all attempts fail
  *
  * @example
- * // 基本用法
+ * // Basic usage
  * const result = await retry(() => fetchData(), { attempts: 3, baseDelay: 1000 });
  *
  * @example
- * // 指数退避
+ * // Exponential backoff
  * const result = await retry(() => detectServer(), {
  *   attempts: 4,
  *   baseDelay: 500,
@@ -78,7 +78,7 @@ function sleep(ms: number): Promise<void> {
  * });
  *
  * @example
- * // 自定义重试条件
+ * // Custom retry condition
  * const result = await retry(() => fetchQuota(), {
  *   attempts: 3,
  *   baseDelay: 1000,
@@ -106,7 +106,7 @@ export async function retry<T>(
       lastResult = await fn();
       lastError = undefined;
 
-      // 检查是否需要重试
+      // Check if retry is needed
       if (!shouldRetry(lastResult, undefined)) {
         return lastResult;
       }
@@ -114,13 +114,13 @@ export async function retry<T>(
       lastError = error instanceof Error ? error : new Error(String(error));
       lastResult = null;
 
-      // 如果有自定义条件且明确不需要重试，则提前退出
+      // If custom condition explicitly says no retry, exit early
       if (!shouldRetry(null, lastError)) {
         throw lastError;
       }
     }
 
-    // 如果还有剩余尝试次数，等待后重试
+    // If there are remaining attempts, wait and retry
     if (attempt < attempts) {
       const delay = calculateDelay(attempt, baseDelay, backoff, maxDelay);
       onRetry?.(attempt, delay);
@@ -128,7 +128,7 @@ export async function retry<T>(
     }
   }
 
-  // 所有尝试都失败
+  // All attempts failed
   if (lastError) {
     throw lastError;
   }
@@ -137,7 +137,7 @@ export async function retry<T>(
 }
 
 /**
- * 创建一个预配置的重试函数
+ * Create a pre-configured retry function
  *
  * @example
  * const retryWithBackoff = createRetry({ attempts: 3, baseDelay: 1000, backoff: "exponential" });

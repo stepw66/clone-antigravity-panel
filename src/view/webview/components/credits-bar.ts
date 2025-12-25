@@ -1,6 +1,6 @@
 /**
- * CreditsBar - Credits 显示条组件
- * 显示 Prompt Credits 和 Flow Credits
+ * CreditsBar - Credits display bar component
+ * Shows Prompt Credits and Flow Credits
  */
 
 import { LitElement, html } from 'lit';
@@ -23,7 +23,7 @@ export class CreditsBar extends LitElement {
     const { promptCredits, flowCredits, formatted } = this.tokenUsage;
     const t = (window as unknown as WindowWithVsCode).__TRANSLATIONS__ || {};
 
-    // 如果都没有数据，不渲染
+    // If no data, don't render
     if (!promptCredits && !flowCredits) {
       return html``;
     }

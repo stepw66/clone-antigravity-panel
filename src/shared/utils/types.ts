@@ -247,6 +247,8 @@ export interface TfaConfig {
   "dashboard.refreshRate": number;
   /** Whether to show GPT quota (GPT shares quota with Claude) */
   "dashboard.includeSecondaryModels": boolean;
+  /** Whether to show AI Credits card */
+  "dashboard.showCreditsCard": boolean;
 
   // ===== 2. Status Bar Settings =====
   /** Whether to show quota in status bar */

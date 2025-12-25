@@ -1,5 +1,5 @@
 /**
- * QuotaDashboard - 配额仪表盘容器组件 (Light DOM)
+ * QuotaDashboard - Quota dashboard container component (Light DOM)
  */
 
 import { LitElement, html } from 'lit';
@@ -16,7 +16,7 @@ export class QuotaDashboard extends LitElement {
   @property({ type: String })
   gaugeStyle: string = 'semi-arc';
 
-  // Light DOM 模式
+  // Light DOM mode
   createRenderRoot() { return this; }
 
   protected render() {

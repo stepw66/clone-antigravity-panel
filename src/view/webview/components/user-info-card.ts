@@ -1,6 +1,6 @@
 /**
- * UserInfoCard - 用户信息卡片组件
- * 只显示用户邮箱和订阅级别
+ * UserInfoCard - User info card component
+ * Shows user email and subscription tier
  */
 
 import { LitElement, html } from 'lit';

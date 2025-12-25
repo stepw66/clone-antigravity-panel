@@ -58,6 +58,7 @@ export class ConfigManager {
       "dashboard.historyRange": this.reader.get<number>("dashboard.historyRange", 90),
       "dashboard.refreshRate": pollingInterval,
       "dashboard.includeSecondaryModels": this.reader.get<boolean>("dashboard.includeSecondaryModels", false),
+      "dashboard.showCreditsCard": this.reader.get<boolean>("dashboard.showCreditsCard", true),
 
       // 2. Status Bar Settings
       "status.showQuota": this.reader.get<boolean>("status.showQuota", true),

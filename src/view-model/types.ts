@@ -192,6 +192,7 @@ export interface SidebarData {
     contexts: TreeSectionState;
     gaugeStyle?: string;
     showUserInfoCard?: boolean;
+    showCreditsCard?: boolean;
 }
 
 // ==================== App State ====================

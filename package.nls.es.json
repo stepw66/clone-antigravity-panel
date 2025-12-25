@@ -24,6 +24,7 @@
     "config.dashboard.gaugeStyle.description": "Elegir el estilo visual para la visualización de cuota en la barra lateral",
     "config.dashboard.viewMode.description": "Elija entre la visualización de modelos agrupados o individuales en la barra lateral",
     "config.dashboard.showUserInfoCard.description": "Mostrar la tarjeta de perfil de usuario (Avatar, Nivel, Plan) en la barra lateral",
+    "config.dashboard.showCreditsCard.description": "Mostrar la tarjeta de uso de créditos de IA (Tokens, Flow) en la barra lateral",
     "config.dashboard.historyRange.description": "Rango de tiempo para el gráfico de uso en minutos (predeterminado: 90 minutos)",
     "config.dashboard.refreshRate.description": "Intervalo de actualización automática en segundos (mínimo: 60s, recomendado: 120s)",
     "config.dashboard.includeSecondaryModels.description": "Mostrar cuota de GPT en la barra lateral (GPT comparte pool de cuota con Claude)",

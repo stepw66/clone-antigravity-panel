@@ -43,6 +43,9 @@ README_zh.md
 CHANGELOG_zh.md
 DEVELOPMENT_HISTORY.md
 
+# README preview images (vsce auto-converts relative paths to GitHub raw URLs)
+assets/preview*.png
+
 # Misc
 .DS_Store
 *.vsix

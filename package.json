@@ -4,7 +4,7 @@
   "description": "%extension.description%",
   "version": "2.3.0",
   "publisher": "n2ns",
-  "license": "GPL-3.0-only",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/n2ns/antigravity-panel.git"
@@ -134,6 +134,12 @@
             "default": true,
             "order": 60,
             "description": "%config.dashboard.showUserInfoCard.description%"
+          },
+          "tfa.dashboard.showCreditsCard": {
+            "type": "boolean",
+            "default": true,
+            "order": 65,
+            "description": "%config.dashboard.showCreditsCard.description%"
           },
           "tfa.dashboard.viewMode": {
             "type": "string",
@@ -301,7 +307,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.10.1",
-    "@types/vscode": "^1.107.0",
+    "@types/vscode": "^1.104.0",
     "@typescript-eslint/eslint-plugin": "^8.50.1",
     "@typescript-eslint/parser": "^8.50.1",
     "@vscode/vsce": "^3.7.1",

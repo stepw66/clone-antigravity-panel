@@ -1,10 +1,8 @@
 /**
- * Webview 端公共类型定义
+ * Webview public type definitions
  */
 
-// ==================== 配额相关 ====================
-
-// ==================== 配额相关 ====================
+// ==================== Quota Types ====================
 
 export interface QuotaDisplayItem {
   id: string;
@@ -17,7 +15,7 @@ export interface QuotaDisplayItem {
   subLabel?: string;
 }
 
-// ==================== 图表相关 ====================
+// ==================== Chart Types ====================
 
 export interface BucketItem {
   groupId: string;
@@ -36,30 +34,30 @@ export interface UsageChartData {
   maxUsage: number;
   displayMinutes: number;
   interval: number;
-  /** 预测分析数据（可选，由 ViewModel 计算） */
+  /** Prediction data (optional, calculated by ViewModel) */
   prediction?: {
-    /** 活跃分组 ID */
+    /** Active group ID */
     groupId: string;
-    /** 活跃分组显示名称 */
+    /** Active group display name */
     groupLabel: string;
-    /** 使用率 (%/hour) */
+    /** Usage rate (%/hour) */
     usageRate: number;
-    /** 预计持续时间描述 (如 "~38h" 或 "Stable") */
+    /** Estimated duration description (e.g. "~38h" or "Stable") */
     runway: string;
-    /** 当前剩余百分比 */
+    /** Current remaining percentage */
     remaining: number;
   };
 }
 
-// ==================== 目录树相关 ====================
+// ==================== Tree Types ====================
 
-/** 文件项 */
+/** File item */
 export interface FileItem {
   name: string;
   path: string;
 }
 
-/** 目录项（任务/上下文） */
+/** Folder item (task/context) */
 export interface FolderItem {
   id: string;
   label: string;
@@ -68,7 +66,7 @@ export interface FolderItem {
   expanded?: boolean;
 }
 
-/** 目录树区块状态 */
+/** Tree section state */
 export interface TreeSectionState {
   title: string;
   stats: string;
@@ -77,7 +75,7 @@ export interface TreeSectionState {
   loading?: boolean;
 }
 
-// ==================== 消息相关 ====================
+// ==================== Message Types ====================
 
 export interface WebviewMessage {
   type: string;
@@ -87,9 +85,9 @@ export interface WebviewMessage {
   path?: string;
 }
 
-// ==================== 用户信息相关 ====================
+// ==================== User Info Types ====================
 
-/** 用户信息数据 */
+/** User info data */
 export interface UserInfoData {
   name?: string;
   email?: string;
@@ -102,7 +100,7 @@ export interface UserInfoData {
   upgradeText?: string;
 }
 
-/** Token 使用数据 */
+/** Token usage data */
 export interface TokenUsageData {
   promptCredits?: {
     available: number;
@@ -138,6 +136,7 @@ export interface WebviewStateUpdate {
   contexts?: TreeSectionState;
   gaugeStyle?: string;
   showUserInfoCard?: boolean;
+  showCreditsCard?: boolean;
   cache?: {
     totalSize: number;
     brainSize: number;

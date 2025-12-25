@@ -24,6 +24,7 @@
     "config.dashboard.gaugeStyle.description": "사이드바에서 할당량 표시의 시각적 스타일 선택",
     "config.dashboard.viewMode.description": "사이드바에서 그룹화된 모델 표시 또는 개별 모델 표시 중 선택",
     "config.dashboard.showUserInfoCard.description": "사이드바에 사용자 프로필 카드(아바타, 등급, 요금제) 표시",
+    "config.dashboard.showCreditsCard.description": "사이드바에 AI 크레딧 사용량 카드(Tokens, Flow) 표시",
     "config.dashboard.historyRange.description": "분 단위 사용량 타임라인 차트의 시간 범위 (기본값: 90분)",
     "config.dashboard.refreshRate.description": "자동 새로고침 간격(초) (최소: 60초, 권장: 120초)",
     "config.dashboard.includeSecondaryModels.description": "사이드바에 GPT 할당량 표시 (GPT는 Claude와 할당량 풀 공유)",

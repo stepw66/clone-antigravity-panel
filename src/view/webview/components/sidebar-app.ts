@@ -21,6 +21,7 @@ import './toolbar.js';
 import './folder-tree.js';
 import './credits-bar.js';
 import './user-info-card.js';
+import './sidebar-footer.js';
 
 declare const acquireVsCodeApi: () => VsCodeApi;
 
@@ -63,6 +64,9 @@ export class SidebarApp extends LitElement {
   private _showUserInfoCard: boolean = true;
 
   @state()
+  private _showCreditsCard: boolean = true;
+
+  @state()
   private _cache: WebviewStateUpdate['cache'] | null = null;
 
   private _vscode = acquireVsCodeApi();
@@ -73,28 +77,28 @@ export class SidebarApp extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
 
-    // 暴露 vscode API 供子组件使用
+    // Expose vscode API for child components
     (window as unknown as WindowWithVsCode).vscodeApi = this._vscode;
 
-    // 从缓存恢复状态（秒开）
+    // Restore state from cache (instant startup)
     const cachedState = this._vscode.getState();
     if (cachedState?.payload) {
       this._applyState(cachedState.payload);
     }
 
-    // 监听 Extension 消息
+    // Listen to Extension messages
     window.addEventListener('message', this._handleMessage);
 
-    // 监听子组件事件 (Light DOM 模式下直接冒泡)
+    // Listen to child component events (bubbles in Light DOM mode)
     this.addEventListener('folder-toggle', this._handleFolderToggle as EventListener);
     this.addEventListener('folder-delete', this._handleFolderDelete as EventListener);
     this.addEventListener('file-click', this._handleFileClick as EventListener);
     this.addEventListener('file-delete', this._handleFileDelete as EventListener);
 
-    // 通知 Extension 前端已就绪
+    // Notify Extension that frontend is ready
     this._vscode.postMessage({ type: 'webviewReady' });
 
-    // 让 host 变为 flex 布局以支持 footer 底部对齐
+    // Make host flex layout to support footer alignment at bottom
     this.style.display = 'flex';
     this.style.flexDirection = 'column';
     this.style.height = '100vh';
@@ -157,12 +161,15 @@ export class SidebarApp extends LitElement {
     if (state.showUserInfoCard !== undefined) {
       this._showUserInfoCard = state.showUserInfoCard;
     }
+    if (state.showCreditsCard !== undefined) {
+      this._showCreditsCard = state.showCreditsCard;
+    }
   }
 
-  // ==================== 事件处理 (Light DOM 简化版) ====================
+  // ==================== Event Handlers (Light DOM simplified) ====================
 
   private _findTreeTitle(e: Event): string {
-    // Light DOM 模式下直接查找父元素
+    // In Light DOM mode, directly find parent element
     const target = e.target as HTMLElement;
     const tree = target.closest('folder-tree');
     return tree?.getAttribute('title') || '';
@@ -191,7 +198,7 @@ export class SidebarApp extends LitElement {
   private _handleFileClick = (e: CustomEvent<{ path: string }>): void => {
     this._vscode.postMessage({ type: 'openFile', path: e.detail.path });
 
-    // 更新选中状态
+    // Update selection state
     this.querySelectorAll('.file').forEach(el => el.classList.remove('selected'));
     const target = e.target as HTMLElement;
     const fileEl = target.closest('.file');
@@ -210,96 +217,56 @@ export class SidebarApp extends LitElement {
     this._vscode.postMessage({ type: 'toggleProjects' });
   }
 
-  private _onReportIssue(): void {
-    this._vscode.postMessage({
-      type: 'openUrl',
-      path: 'https://github.com/n2ns/antigravity-panel/issues'
-    });
-  }
-
-  private _onProjectHome(): void {
-    this._vscode.postMessage({
-      type: 'openUrl',
-      path: 'https://github.com/n2ns/antigravity-panel'
-    });
-  }
 
 
-
-  // ==================== 渲染 ====================
+  // ==================== Render ====================
 
   protected render() {
     return html`
-      <quota-dashboard 
-        .quotas=${this._quotas} 
-        .gaugeStyle=${this._gaugeStyle}
-      ></quota-dashboard>
-      
-      <usage-chart .data=${this._chartData}></usage-chart>
-      
-      <credits-bar
-        .tokenUsage=${this._tokenUsage}
-      ></credits-bar>
-      
-      ${this._showUserInfoCard ? html`
-        <user-info-card
-          .user=${this._user}
-        ></user-info-card>
-      ` : nothing}
-      
-      <app-toolbar></app-toolbar>
-      
-      <folder-tree
-        title="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.brain || 'Brain'}"
-        .stats=${this._tasks.stats}
-        ?collapsed=${this._tasks.collapsed}
-        ?loading=${this._tasks.loading}
-        .folders=${this._tasks.folders}
-        emptyText="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.noTasksFound || 'No tasks found'}"
-        @toggle=${this._onToggleTasks}
-      ></folder-tree>
-      
-      <folder-tree
-        title="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.codeTracker || 'Code Tracker'}"
-        .stats=${this._contexts.stats}
-        ?collapsed=${this._contexts.collapsed}
-        ?loading=${this._contexts.loading}
-        .folders=${this._contexts.folders}
-        emptyText="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.noCacheFound || 'No code context cache'}"
-        @toggle=${this._onToggleContexts}
-      ></folder-tree>
-
-      <div class="recovery-actions">
-        <button class="recovery-btn primary" 
-                @click=${() => this._vscode.postMessage({ type: 'restartLanguageServer' })} 
-                data-tooltip="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.restartServiceTooltip || 'Restart the background Agent language server (use when code analysis is stuck)'}">
-          <i class="codicon codicon-sync"></i>
-          <span>${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.restartService || "Restart Service"}</span>
-        </button>
-        <button class="recovery-btn primary" 
-                @click=${() => this._vscode.postMessage({ type: 'restartUserStatusUpdater' })} 
-                data-tooltip="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.resetStatusTooltip || 'Reset user subscription and quota refresh status (use when quota display is not updating)'}">
-          <i class="codicon codicon-refresh"></i>
-          <span>${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.resetStatus || "Reset Status"}</span>
-        </button>
+      <div class="scrollable-content" style="flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0;">
+        <quota-dashboard 
+          .quotas=${this._quotas} 
+          .gaugeStyle=${this._gaugeStyle}
+        ></quota-dashboard>
+        
+        <usage-chart .data=${this._chartData}></usage-chart>
+        
+        ${this._showCreditsCard ? html`
+          <credits-bar
+            .tokenUsage=${this._tokenUsage}
+          ></credits-bar>
+        ` : nothing}
+        
+        ${this._showUserInfoCard ? html`
+          <user-info-card
+            .user=${this._user}
+          ></user-info-card>
+        ` : nothing}
+        
+        <app-toolbar></app-toolbar>
+        
+        <folder-tree
+          title="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.brain || 'Brain'}"
+          .stats=${this._tasks.stats}
+          ?collapsed=${this._tasks.collapsed}
+          ?loading=${this._tasks.loading}
+          .folders=${this._tasks.folders}
+          emptyText="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.noTasksFound || 'No tasks found'}"
+          @toggle=${this._onToggleTasks}
+        ></folder-tree>
+        
+        <folder-tree
+          title="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.codeTracker || 'Code Tracker'}"
+          .stats=${this._contexts.stats}
+          ?collapsed=${this._contexts.collapsed}
+          ?loading=${this._contexts.loading}
+          .folders=${this._contexts.folders}
+          emptyText="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.noCacheFound || 'No code context cache'}"
+          @toggle=${this._onToggleContexts}
+        ></folder-tree>
       </div>
 
-      <div class="sidebar-footer">
-        <button class="discussions-btn" 
-                @click=${this._onReportIssue} 
-                data-tooltip="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.feedbackTooltip || 'Report an issue or suggestion: Jump to the GitHub Issues page'}">
-          <i class="codicon codicon-bug"></i>
-          <span>${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.reportIssue || "Feedback"}</span>
-        </button>
-        <button class="discussions-btn" 
-                @click=${this._onProjectHome} 
-                data-tooltip="${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.starTooltip || 'If you like this extension, please star it on GitHub to support us. It is our greatest motivation for continuous improvement!'}">
-          <i class="codicon codicon-star-full" style="color: #e3b341;"></i>
-          <span>${(window as unknown as WindowWithVsCode).__TRANSLATIONS__?.giveStar || "Star"}</span>
-        </button>
-      </div>
-
-      <div class="sidebar-tagline">For Antigravity. By Antigravity.</div>
+      <sidebar-footer style="flex-shrink: 0; position: relative; z-index: 10;"></sidebar-footer>
 
     `;
   }

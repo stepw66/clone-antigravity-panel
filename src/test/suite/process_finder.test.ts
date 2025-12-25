@@ -2,8 +2,8 @@ import * as assert from 'assert';
 import { ProcessFinder } from '../../shared/platform/process_finder';
 
 /**
- * 跨平台测试用 ProcessFinder 子类
- * 完全 Mock 所有系统调用，不依赖任何平台特定命令
+ * Cross-platform test ProcessFinder subclass
+ * Fully mocks all system calls, no platform-specific commands
  */
 class MockProcessFinder extends ProcessFinder {
     private mockTryDetectResult: { port: number; csrfToken: string } | null = null;
@@ -11,7 +11,7 @@ class MockProcessFinder extends ProcessFinder {
     public tryDetectCallCount = 0;
 
     /**
-     * 设置 tryDetect 的模拟返回值
+     * Set mock return value for tryDetect
      */
     setMockResult(result: { port: number; csrfToken: string } | null) {
         this.mockTryDetectResult = result;
@@ -19,7 +19,7 @@ class MockProcessFinder extends ProcessFinder {
     }
 
     /**
-     * 设置 tryDetect 抛出错误
+     * Set tryDetect to throw an error
      */
     setMockError(error: Error) {
         this.mockTryDetectError = error;
@@ -27,7 +27,7 @@ class MockProcessFinder extends ProcessFinder {
     }
 
     /**
-     * 设置多次调用的序列结果
+     * Set sequence results for multiple calls
      */
     private sequenceResults: Array<{ port: number; csrfToken: string } | null | Error> = [];
 
@@ -38,7 +38,7 @@ class MockProcessFinder extends ProcessFinder {
     protected async tryDetect(): Promise<{ port: number; csrfToken: string } | null> {
         this.tryDetectCallCount++;
 
-        // 如果有序列结果，优先使用
+        // If sequence results exist, use them first
         if (this.sequenceResults.length > 0) {
             const result = this.sequenceResults.shift();
             if (result instanceof Error) {
@@ -47,7 +47,7 @@ class MockProcessFinder extends ProcessFinder {
             return result ?? null;
         }
 
-        // 否则使用单次设置
+        // Otherwise use single setting
         if (this.mockTryDetectError) {
             throw this.mockTryDetectError;
         }
@@ -83,7 +83,7 @@ suite('ProcessFinder Test Suite', () => {
     });
 
     test('should retry on null result', async () => {
-        // 第一次返回 null，第二次返回结果
+        // First returns null, second returns result
         finder.setMockSequence([
             null,
             { port: 44000, csrfToken: 'retry-success' }
@@ -97,7 +97,7 @@ suite('ProcessFinder Test Suite', () => {
     });
 
     test('should retry on error', async () => {
-        // 第一次抛错，第二次成功
+        // First throws error, second succeeds
         finder.setMockSequence([
             new Error('Connection refused'),
             { port: 44000, csrfToken: 'error-then-success' }
@@ -111,7 +111,7 @@ suite('ProcessFinder Test Suite', () => {
     });
 
     test('should respect max attempts', async () => {
-        // 始终返回 null
+        // Always returns null
         finder.setMockResult(null);
 
         const result = await finder.detect({ attempts: 3, baseDelay: 10 });
@@ -121,11 +121,11 @@ suite('ProcessFinder Test Suite', () => {
     });
 
     test('should return null after all retries fail', async () => {
-        // 所有尝试都失败
+        // All attempts fail
         finder.setMockSequence([
             new Error('Attempt 1 failed'),
             new Error('Attempt 2 failed'),
-            null // 最后一次返回 null
+            null // Last attempt returns null
         ]);
 
         const result = await finder.detect({ attempts: 3, baseDelay: 10 });
@@ -147,7 +147,7 @@ suite('ProcessFinder Test Suite', () => {
     test('should handle default options', async () => {
         finder.setMockResult({ port: 8080, csrfToken: 'default-opts' });
 
-        const result = await finder.detect(); // 使用默认参数
+        const result = await finder.detect(); // Use default options
 
         assert.ok(result);
         assert.strictEqual(result?.port, 8080);

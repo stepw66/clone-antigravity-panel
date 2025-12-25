@@ -1,5 +1,5 @@
 /**
- * UsageChart - 使用量柱状图组件 (Light DOM)
+ * UsageChart - Usage bar chart component (Light DOM)
  */
 
 import { LitElement, html, nothing } from 'lit';
@@ -11,7 +11,7 @@ export class UsageChart extends LitElement {
   @property({ type: Object })
   data: UsageChartData | null = null;
 
-  // Light DOM 模式
+  // Light DOM mode
   createRenderRoot() { return this; }
 
   protected render() {
