@@ -13,6 +13,8 @@
     "command.restartLanguageServer.title": "Agent-Dienst neu starten",
     "command.restartUserStatusUpdater.title": "Status zurücksetzen",
     "command.runDiagnostics.title": "Verbindungsdiagnose ausführen",
+    "command.toggleAutoAccept": "Toggle Auto-Accept",
+    "command.toggleAutoAccept.title": "Toggle Agent Auto-Accept",
     "config.statusBarStyle.percentage": "Verbleibendes Kontingent als Prozentsatz anzeigen (z.B. 75%)",
     "config.statusBarStyle.resetTime": "Zeit bis zum Zurücksetzen des Kontingents anzeigen (z.B. 2h 30m)",
     "config.statusBarStyle.used": "Verbrauchtes Kontingent anzeigen (z.B. 25/100)",
@@ -40,5 +42,10 @@
     "config.cache.hideEmptyFolders.description": "Leere Ordner in Brain und Code Tracker Baumansichten ausblenden",
     "config.system.serverHost.description": "⚠️ Erweitert: Benutzerdefinierter Server-Hostname für Kontingentmetriken (Standard: 127.0.0.1)",
     "config.system.apiPath.description": "⚠️ Erweitert: Benutzerdefinierter API-Endpunkt für Kontingentmetriken",
-    "config.system.debugMode.description": "Debug-Protokollierung im 'Toolkit for Antigravity' Ausgabekanal aktivieren"
+    "config.system.debugMode.description": "Debug-Protokollierung im 'Toolkit for Antigravity' Ausgabekanal aktivieren",
+    "config.system.autoAccept.description": "Automatically accept AI agent commands and file edits. (Hands-free Mode)",
+    "config.system.autoAcceptInterval.description": "Interval for checking auto-accept in milliseconds (default: 800ms). Lower values are faster but consume more resources.",
+    "Auto-Accept: ON": "Auto-Accept: ON",
+    "Auto-Accept: OFF": "Auto-Accept: OFF",
+    "Hands-free Mode: Automatically accept agent suggested edits and terminal commands": "Hands-free Mode: Automatically accept agent suggested edits and terminal commands"
 }

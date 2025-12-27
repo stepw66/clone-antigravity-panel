@@ -13,6 +13,8 @@
     "command.restartLanguageServer.title": "エージェントサービスを再起動",
     "command.restartUserStatusUpdater.title": "ステータスをリセット",
     "command.runDiagnostics.title": "接続診断を実行",
+    "command.toggleAutoAccept": "Toggle Auto-Accept",
+    "command.toggleAutoAccept.title": "Toggle Agent Auto-Accept",
     "config.statusBarStyle.percentage": "残りのクォータをパーセンテージで表示 (例: 75%)",
     "config.statusBarStyle.resetTime": "クォータのリセットまでの時間を表示 (例: 2h 30m)",
     "config.statusBarStyle.used": "使用済みクォータ量を表示 (例: 25/100)",
@@ -40,5 +42,10 @@
     "config.cache.hideEmptyFolders.description": "BrainとCode Trackerツリービューで空のフォルダを非表示",
     "config.system.serverHost.description": "⚠️ 上級者向け：クォータメトリクス用のカスタムサーバーホスト名（デフォルト: 127.0.0.1）",
     "config.system.apiPath.description": "⚠️ 上級者向け：クォータメトリクス用のカスタムAPIエンドポイント",
-    "config.system.debugMode.description": "'Toolkit for Antigravity' 出力チャンネルにデバッグログを有効化"
+    "config.system.debugMode.description": "'Toolkit for Antigravity' 出力チャンネルにデバッグログを有効化",
+    "config.system.autoAccept.description": "Automatically accept AI agent commands and file edits. (Hands-free Mode)",
+    "config.system.autoAcceptInterval.description": "Interval for checking auto-accept in milliseconds (default: 800ms). Lower values are faster but consume more resources.",
+    "Auto-Accept: ON": "Auto-Accept: ON",
+    "Auto-Accept: OFF": "Auto-Accept: OFF",
+    "Hands-free Mode: Automatically accept agent suggested edits and terminal commands": "Hands-free Mode: Automatically accept agent suggested edits and terminal commands"
 }

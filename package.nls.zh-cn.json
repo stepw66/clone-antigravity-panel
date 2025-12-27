@@ -13,6 +13,7 @@
     "command.restartLanguageServer.title": "重启 Agent 服务",
     "command.restartUserStatusUpdater.title": "重置状态更新",
     "command.runDiagnostics.title": "连接性诊断",
+    "command.toggleAutoAccept": "Toggle Auto-Accept",
     "command.toggleAutoAccept.title": "切换 AI 自动接受",
     "config.statusBarStyle.percentage": "显示剩余配额百分比（例如：75%）",
     "config.statusBarStyle.resetTime": "显示配额重置倒计时（例如：2小时30分）",

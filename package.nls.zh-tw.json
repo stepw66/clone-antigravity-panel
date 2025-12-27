@@ -13,6 +13,8 @@
     "command.restartLanguageServer.title": "重新啟動代理服務",
     "command.restartUserStatusUpdater.title": "重設狀態",
     "command.runDiagnostics.title": "執行連線診斷",
+    "command.toggleAutoAccept": "切換自動接受",
+    "command.toggleAutoAccept.title": "切換 AI 自動接受",
     "config.statusBarStyle.percentage": "顯示剩餘配額百分比（例如：75%）",
     "config.statusBarStyle.resetTime": "顯示配額重設倒數計時（例如：2小時30分）",
     "config.statusBarStyle.used": "顯示已使用配額（例如：25/100）",
@@ -40,5 +42,10 @@
     "config.cache.hideEmptyFolders.description": "在 Brain 和 Code Tracker 樹狀檢視中隱藏空資料夾",
     "config.system.serverHost.description": "⚠️ 進階：配額指標的自訂伺服器主機名稱（預設：127.0.0.1）",
     "config.system.apiPath.description": "⚠️ 進階：配額指標的自訂 API 端點",
-    "config.system.debugMode.description": "啟用偵錯記錄，輸出至 'Toolkit for Antigravity' 頻道"
+    "config.system.debugMode.description": "啟用偵錯記錄，輸出至 'Toolkit for Antigravity' 頻道",
+    "config.system.autoAccept.description": "自動接受 AI 代理的終端機指令和檔案修改。（無人值守模式）",
+    "config.system.autoAcceptInterval.description": "自動接受檢查的間隔時間（毫秒，預設：800ms）。值越小回應越快，但資源消耗略高。",
+    "Auto-Accept: ON": "自動接受：開啟",
+    "Auto-Accept: OFF": "自動接受：關閉",
+    "Hands-free Mode: Automatically accept agent suggested edits and terminal commands": "無人值守模式：自動接受代理建議的檔案修改和終端機指令"
 }
