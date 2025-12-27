@@ -2,6 +2,10 @@ English | [中文文档](docs/CHANGELOG_zh.md)
 
 # Changelog
 
+## [2.4.1] - 2025-12-27
+### Added
+- **Auto-Accept Interval Configuration**: Added `tfa.system.autoAcceptInterval` setting to customize the polling frequency of the Auto-Accept feature (default: 800ms).
+
 ## [2.4.0] - 2025-12-27
 
 ### Changed
