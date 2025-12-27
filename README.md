@@ -73,6 +73,20 @@ English | [中文文档](README_zh.md)
 - **Code Context**: Manage code analysis caches per project
 - **Smart Cleanup**: Automatically closes related editor tabs
 
+### 🤖 Auto-Accept (Hands-free Mode)
+
+**Streamline your workflow**
+- Automatically accepts Agent-suggested terminal commands and file edits
+- Toggle on/off via the sidebar "Rocket" switch or command
+- Ideal for rapid prototyping when you trust the Agent's output
+
+### 🔄 Service Recovery Tools
+
+**Built-in troubleshooting**
+- **Restart**: Reboots the background Language Server if the Agent is unresponsive
+- **Reset**: Clears user status cache to fix stuck quota updates
+- **Reload**: Refreshes the VS Code window to resolve UI glitches
+
 ### ⚙️ Quick Configuration Access
 
 **One-click shortcuts to important settings**
@@ -151,6 +165,7 @@ Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and search for:
 | `Antigravity Toolkit: Restart Language Server` | Restart Antigravity Agent Service |
 | `Antigravity Toolkit: Reset User Status` | Reset the status updater |
 | `Antigravity Toolkit: Run Diagnostics` | Run connectivity diagnostics |
+| `Antigravity Toolkit: Toggle Auto-Accept` | Enable/Disable automatic command acceptance |
 
 ## ⚙️ Configuration
 
