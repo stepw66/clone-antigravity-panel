@@ -31,6 +31,12 @@ export class ProcessFinder {
   public candidateCount: number = 0;
   // Detailed info about attempts (for diagnostics)
   public attemptDetails: CommunicationAttempt[] = [];
+  // Enhanced diagnostics
+  public tokenPreview: string = '';  // First 8 chars of CSRF token
+  public portsFromCmdline: number = 0;  // Count of ports from command line
+  public portsFromNetstat: number = 0;  // Count of ports from netstat
+  public retryCount: number = 0;  // Number of retry attempts
+  public protocolUsed: 'https' | 'http' | 'none' = 'none';  // Final protocol used
 
   constructor() {
     const platform = process.platform;
@@ -87,6 +93,10 @@ export class ProcessFinder {
     this.failureReason = null; // Reset failure reason
     this.candidateCount = 0;   // Reset candidate count
     this.attemptDetails = [];  // Reset attempts
+    this.tokenPreview = '';    // Reset token preview
+    this.portsFromCmdline = 0; // Reset port counts
+    this.portsFromNetstat = 0;
+    this.protocolUsed = 'none';
     try {
       const cmd = this.strategy.getProcessListCommand(this.processName);
       const { stdout } = await this.execute(cmd);
@@ -160,13 +170,18 @@ export class ProcessFinder {
 
       // Get all candidate ports
       let ports = await this.getListeningPorts(bestInfo.pid);
+      this.portsFromNetstat = ports.length;
+
+      // Store token preview for diagnostics (first 8 chars)
+      this.tokenPreview = bestInfo.csrfToken.substring(0, 8);
 
       // If we have a fixed port from cmdline, ensure it's tried even if not found by OS tools
       if (bestInfo.extensionPort > 0 && !ports.includes(bestInfo.extensionPort)) {
         ports = [bestInfo.extensionPort, ...ports];
+        this.portsFromCmdline = 1;
       }
 
-      const workingPort = await this.findWorkingPort(bestInfo.pid, ports, bestInfo.csrfToken);
+      const workingPort = await this.findWorkingPort(bestInfo.pid, ports, bestInfo.csrfToken, bestInfo.extensionPort);
       if (!workingPort) {
         // If we found a server but couldn't talk to it, check why
         const hasAuthFailure = this.attemptDetails.some(a => a.statusCode === 401 || a.statusCode === 403);
@@ -207,7 +222,7 @@ export class ProcessFinder {
     try {
       const cmd = this.strategy.getPortListCommand(pid);
       const { stdout } = await this.execute(cmd);
-      return this.strategy.parseListeningPorts(stdout);
+      return this.strategy.parseListeningPorts(stdout, pid);
     } catch {
       return [];
     }
@@ -216,20 +231,25 @@ export class ProcessFinder {
   private async findWorkingPort(
     pid: number,
     ports: number[],
-    csrfToken: string
+    csrfToken: string,
+    cmdlinePort?: number
   ): Promise<number | null> {
     for (const port of ports) {
       const result = await this.testPort(port, csrfToken);
+      const portSource = (cmdlinePort && port === cmdlinePort) ? 'cmdline' : 'netstat';
 
-      // Record attempt for diagnostics
+      // Record attempt for diagnostics with enhanced info
       this.attemptDetails.push({
         pid,
         port,
         statusCode: result.statusCode,
-        error: result.error
+        error: result.error,
+        protocol: result.protocol,
+        portSource
       });
 
       if (result.success) {
+        this.protocolUsed = result.protocol;
         return port;
       }
     }
@@ -248,7 +268,7 @@ export class ProcessFinder {
   /**
    * Test if port is accessible (supports HTTPS → HTTP automatic fallback)
    */
-  protected async testPort(port: number, csrfToken: string): Promise<{ success: boolean; statusCode: number; error?: string }> {
+  protected async testPort(port: number, csrfToken: string): Promise<{ success: boolean; statusCode: number; protocol: 'https' | 'http'; error?: string }> {
     return httpTestPort(
       "127.0.0.1",
       port,

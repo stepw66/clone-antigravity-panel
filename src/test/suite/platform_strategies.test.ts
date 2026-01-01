@@ -101,7 +101,7 @@ suite('Platform Strategies Test Suite', () => {
   TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING       12345
   TCP    [::1]:42100            [::]:0                 LISTENING       12345
 `;
-            const ports = strategy.parseListeningPorts(netstatOutput);
+            const ports = strategy.parseListeningPorts(netstatOutput, 12345);
 
             assert.strictEqual(ports.length, 3);
             assert.ok(ports.includes(42100));
@@ -115,13 +115,13 @@ suite('Platform Strategies Test Suite', () => {
   TCP    127.0.0.1:42100        0.0.0.0:0              LISTENING       12345
   TCP    127.0.0.1:3000         0.0.0.0:0              LISTENING       12345
 `;
-            const ports = strategy.parseListeningPorts(netstatOutput);
+            const ports = strategy.parseListeningPorts(netstatOutput, 12345);
 
             assert.deepStrictEqual(ports, [3000, 8080, 42100]);
         });
 
         test('should handle empty netstat output', () => {
-            const ports = strategy.parseListeningPorts('');
+            const ports = strategy.parseListeningPorts('', 12345);
             assert.deepStrictEqual(ports, []);
         });
 
@@ -178,7 +178,7 @@ language 12345 user   10u  IPv4 0x1234567890      0t0  TCP *:42100 (LISTEN)
 language 12345 user   11u  IPv4 0x1234567891      0t0  TCP 127.0.0.1:42101 (LISTEN)
 language 12345 user   12u  IPv6 0x1234567892      0t0  TCP [::1]:42102 (LISTEN)`;
 
-            const ports = strategy.parseListeningPorts(lsofOutput);
+            const ports = strategy.parseListeningPorts(lsofOutput, 12345);
 
             assert.strictEqual(ports.length, 3);
             assert.ok(ports.includes(42100));
@@ -191,8 +191,30 @@ language 12345 user   12u  IPv6 0x1234567892      0t0  TCP [::1]:42102 (LISTEN)`
 language 12345 user   11u  IPv4 0x124  0t0  TCP *:42100 (LISTEN)
 language 12345 user   12u  IPv4 0x125  0t0  TCP *:3000 (LISTEN)`;
 
-            const ports = strategy.parseListeningPorts(lsofOutput);
+            const ports = strategy.parseListeningPorts(lsofOutput, 12345);
             assert.deepStrictEqual(ports, [3000, 8080, 42100]);
+        });
+
+        test('should filter ports by PID on macOS (Issue #21)', () => {
+            // Simulates the bug scenario: lsof returns ports from multiple processes
+            const lsofOutput = `COMMAND   PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+QQ         9691 user   10u  IPv4 0x1234567890      0t0  TCP 127.0.0.1:4001 (LISTEN)
+language  71666 user   10u  IPv4 0x1234567890      0t0  TCP *:42100 (LISTEN)
+language  71666 user   11u  IPv4 0x1234567891      0t0  TCP 127.0.0.1:42101 (LISTEN)`;
+
+            const ports = strategy.parseListeningPorts(lsofOutput, 71666);
+
+            assert.strictEqual(ports.length, 2);
+            assert.ok(ports.includes(42100));
+            assert.ok(ports.includes(42101));
+            assert.ok(!ports.includes(4001), 'Should NOT include port from different PID (9691)');
+        });
+
+        test('should return empty array when PID not found in lsof output', () => {
+            const lsofOutput = `QQ 9691 user 10u IPv4 0x123 0t0 TCP 127.0.0.1:4001 (LISTEN)`;
+
+            const ports = strategy.parseListeningPorts(lsofOutput, 99999);
+            assert.deepStrictEqual(ports, []);
         });
     });
 
@@ -216,7 +238,7 @@ LISTEN     0      128    127.0.0.1:42100                  *:*                   
 LISTEN     0      128    *:42101                  *:*                   users:(("language_server",pid=12345,fd=11))
 LISTEN     0      128    [::1]:42102               [::]:*                   users:(("language_server",pid=12345,fd=12))`;
 
-            const ports = strategy.parseListeningPorts(ssOutput);
+            const ports = strategy.parseListeningPorts(ssOutput, 12345);
 
             assert.strictEqual(ports.length, 3);
             assert.ok(ports.includes(42100));
@@ -229,7 +251,7 @@ LISTEN     0      128    [::1]:42102               [::]:*                   user
 language 12345 user   10u  IPv4  12345      0t0  TCP *:42100 (LISTEN)
 language 12345 user   11u  IPv4  12346      0t0  TCP 127.0.0.1:42101 (LISTEN)`;
 
-            const ports = strategy.parseListeningPorts(lsofOutput);
+            const ports = strategy.parseListeningPorts(lsofOutput, 12345);
 
             assert.strictEqual(ports.length, 2);
             assert.ok(ports.includes(42100));
@@ -237,7 +259,7 @@ language 12345 user   11u  IPv4  12346      0t0  TCP 127.0.0.1:42101 (LISTEN)`;
         });
 
         test('should return empty array for empty output', () => {
-            const ports = strategy.parseListeningPorts('');
+            const ports = strategy.parseListeningPorts('', 12345);
             assert.deepStrictEqual(ports, []);
         });
     });

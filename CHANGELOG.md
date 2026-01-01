@@ -2,6 +2,18 @@ English | [中文文档](docs/CHANGELOG_zh.md)
 
 # Changelog
 
+## [2.4.2] - 2026-01-01
+
+### Fixed
+- **macOS Port Detection (Issue #21)**: Fixed `parseListeningPorts` incorrectly including ports from other processes. Now filters `lsof` output by PID to ensure only the target Language Server's ports are detected.
+
+### Added
+- **Enhanced Diagnostics**: Auto-reported issues now include additional debugging information:
+  - Token Preview (first 8 characters of CSRF token)
+  - Port Sources (command line vs netstat)
+  - Protocol Used (HTTPS or HTTP fallback)
+  - Retry Count
+
 ## [2.4.1] - 2025-12-27
 ### Added
 - **Auto-Accept Interval Configuration**: Added `tfa.system.autoAcceptInterval` setting to customize the polling frequency of the Auto-Accept feature (default: 800ms).

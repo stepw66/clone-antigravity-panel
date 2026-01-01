@@ -13,6 +13,12 @@ export interface DiagnosticMetadata {
     serverResponse?: string;
     attemptDetails?: string;
     osDetailedVersion?: string;
+    // Enhanced diagnostics v2
+    tokenPreview?: string;  // First 8 chars of CSRF token
+    portsFromCmdline?: number;  // Ports from command line
+    portsFromNetstat?: number;  // Ports from netstat
+    protocolUsed?: string;  // Protocol used (https/http/none)
+    retryCount?: number;  // Number of retry attempts
 }
 
 /**
@@ -38,6 +44,13 @@ export class FeedbackManager {
         if (meta.candidateCount !== undefined) diagInfo += `- **${vscode.l10n.t("Candidate Process Count")}**: ${meta.candidateCount}\n`;
         if (meta.parsingInfo) diagInfo += `- **${vscode.l10n.t("Parsing Details")}**: ${meta.parsingInfo}\n`;
         if (meta.attemptDetails) diagInfo += `- **Attempt Details**: ${meta.attemptDetails}\n`;
+        // Enhanced diagnostics v2
+        if (meta.tokenPreview) diagInfo += `- **Token Preview**: ${meta.tokenPreview}...\n`;
+        if (meta.portsFromCmdline !== undefined || meta.portsFromNetstat !== undefined) {
+            diagInfo += `- **Port Sources**: cmdline=${meta.portsFromCmdline ?? 0}, netstat=${meta.portsFromNetstat ?? 0}\n`;
+        }
+        if (meta.protocolUsed) diagInfo += `- **Protocol Used**: ${meta.protocolUsed}\n`;
+        if (meta.retryCount !== undefined) diagInfo += `- **Retry Count**: ${meta.retryCount}\n`;
         if (meta.serverResponse) diagInfo += `\n**Server Response**:\n\`\`\`\n${meta.serverResponse.substring(0, 500)}\n\`\`\`\n`;
 
         const body = encodeURIComponent(

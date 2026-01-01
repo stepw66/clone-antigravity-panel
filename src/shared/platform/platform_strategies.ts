@@ -80,7 +80,8 @@ export class WindowsStrategy implements PlatformStrategy {
     return `netstat -ano | findstr "${pid}" | findstr "LISTENING"`;
   }
 
-  parseListeningPorts(stdout: string): number[] {
+  parseListeningPorts(stdout: string, _pid: number): number[] {
+    // Windows netstat + findstr already filters by PID, so we just parse all matches
     const portRegex = /(?:127\.0\.0\.1|0\.0\.0\.0|\[::1?\]):(\d+)\s+\S+\s+LISTENING/gi;
     const ports: number[] = [];
     let match;
@@ -151,19 +152,32 @@ export class UnixStrategy implements PlatformStrategy {
       : `ss -tlnp 2>/dev/null | grep "pid=${pid}" || lsof -iTCP -sTCP:LISTEN -n -P -p ${pid} 2>/dev/null`;
   }
 
-  parseListeningPorts(stdout: string): number[] {
+  parseListeningPorts(stdout: string, pid: number): number[] {
     const ports: number[] = [];
-    let match;
+    const pidStr = String(pid);
+    const lines = stdout.split('\n');
 
     if (this.platform === "darwin") {
-      const lsofRegex = /(?:TCP|UDP)\s+(?:\*|[\d.]+|\[[\da-f:]+\]):(\d+)\s+\(LISTEN\)/gi;
-      while ((match = lsofRegex.exec(stdout)) !== null) {
-        const port = parseInt(match[1], 10);
-        if (!ports.includes(port)) {
-          ports.push(port);
+      // lsof output format: COMMAND PID USER FD TYPE ... NAME
+      // Filter lines by PID (second column) before extracting ports
+      // This fixes Issue #21: lsof may return ports from other processes
+      for (const line of lines) {
+        const parts = line.trim().split(/\s+/);
+        // Check if line belongs to target PID (second column)
+        if (parts.length >= 2 && parts[1] === pidStr) {
+          const portMatch = line.match(/(?:TCP|UDP)\s+(?:\*|[\d.]+|\[[\da-f:]+\]):(\d+)\s+\(LISTEN\)/i);
+          if (portMatch) {
+            const port = parseInt(portMatch[1], 10);
+            if (!ports.includes(port)) {
+              ports.push(port);
+            }
+          }
         }
       }
     } else {
+      // Linux: ss output already filters by pid via grep in command
+      // But we still apply PID check for lsof fallback
+      let match;
       const ssRegex = /LISTEN\s+\d+\s+\d+\s+(?:\*|[\d.]+|\[[\da-f:]*\]):(\d+)/gi;
       while ((match = ssRegex.exec(stdout)) !== null) {
         const port = parseInt(match[1], 10);
@@ -172,11 +186,17 @@ export class UnixStrategy implements PlatformStrategy {
         }
       }
       if (ports.length === 0) {
-        const lsofRegex = /(?:TCP|UDP)\s+(?:\*|[\d.]+|\[[\da-f:]+\]):(\d+)\s+\(LISTEN\)/gi;
-        while ((match = lsofRegex.exec(stdout)) !== null) {
-          const port = parseInt(match[1], 10);
-          if (!ports.includes(port)) {
-            ports.push(port);
+        // lsof fallback - apply PID filtering like macOS
+        for (const line of lines) {
+          const parts = line.trim().split(/\s+/);
+          if (parts.length >= 2 && parts[1] === pidStr) {
+            const portMatch = line.match(/(?:TCP|UDP)\s+(?:\*|[\d.]+|\[[\da-f:]+\]):(\d+)\s+\(LISTEN\)/i);
+            if (portMatch) {
+              const port = parseInt(portMatch[1], 10);
+              if (!ports.includes(port)) {
+                ports.push(port);
+              }
+            }
           }
         }
       }

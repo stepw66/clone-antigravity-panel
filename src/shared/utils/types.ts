@@ -139,6 +139,10 @@ export interface CommunicationAttempt {
   port: number;
   statusCode: number;
   error?: string;
+  /** Protocol used: 'https' or 'http' */
+  protocol?: 'https' | 'http';
+  /** Where the port was discovered from */
+  portSource?: 'cmdline' | 'netstat';
 }
 
 /**
@@ -177,8 +181,8 @@ export interface PlatformStrategy {
   parseProcessInfo(stdout: string): ProcessInfo[] | null;
   /** Get port list command */
   getPortListCommand(pid: number): string;
-  /** Parse listening ports */
-  parseListeningPorts(stdout: string): number[];
+  /** Parse listening ports for a specific process */
+  parseListeningPorts(stdout: string, pid: number): number[];
 }
 
 // ==================== Cache Related ====================

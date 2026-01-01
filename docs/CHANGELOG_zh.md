@@ -2,6 +2,18 @@
 
 # 更新日志
 
+## [2.4.2] - 2026-01-01
+
+### 修复
+- **macOS 端口检测 (Issue #21)**: 修复 `parseListeningPorts` 函数错误包含其他进程端口的问题。现在会按 PID 过滤 `lsof` 输出，确保只检测目标 Language Server 的端口。
+
+### 新增
+- **增强诊断信息**: 自动上报的问题现在包含更多调试信息：
+  - Token 预览（CSRF Token 前 8 个字符）
+  - 端口来源（命令行参数 vs netstat）
+  - 使用的协议（HTTPS 或 HTTP fallback）
+  - 重试次数
+
 ## [2.4.1] - 2025-12-27
 ### 新增
 - **自动接受间隔配置**: 新增 `tfa.system.autoAcceptInterval` 设置项，允许自定义自动接受功能的轮询频率（默认：800ms）。

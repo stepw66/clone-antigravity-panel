@@ -4,7 +4,7 @@ This document outlines the specific localization strategy for the Antigravity ID
 
 ## Summary of Rules
 
-As of version 2.4.1, the following rules apply to all 13 supported languages:
+As of version 2.4.2, the following rules apply to all 13 supported languages:
 
 ### 1. Technical Terms and UI Labels (English ONLY)
 All primary UI labels, technical terms, and command titles on the panel must remain in **English**. Do not translate these strings even if a localized version exists in the source files.

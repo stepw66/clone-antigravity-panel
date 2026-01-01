@@ -18,7 +18,7 @@ class MockStrategy implements PlatformStrategy {
         }
     }
 
-    parseListeningPorts(stdout: string) {
+    parseListeningPorts(stdout: string, _pid: number) {
         if (!stdout) return [];
         try {
             return JSON.parse(stdout);
@@ -34,7 +34,7 @@ class MockStrategy implements PlatformStrategy {
 class DiagnosticTestFinder extends ProcessFinder {
     public mockStdout: string = '';
     public mockPortStdout: string = '';
-    public mockTestResults: Record<number, { success: boolean; statusCode: number; error?: string }> = {};
+    public mockTestResults: Record<number, { success: boolean; statusCode: number; protocol: 'https' | 'http'; error?: string }> = {};
 
     constructor(strategy: PlatformStrategy) {
         super();
@@ -51,8 +51,8 @@ class DiagnosticTestFinder extends ProcessFinder {
         return { stdout: '', stderr: '' };
     }
 
-    protected async testPort(port: number, _csrf: string): Promise<{ success: boolean; statusCode: number; error?: string }> {
-        return this.mockTestResults[port] || { success: false, statusCode: 500, error: 'Conn error' };
+    protected async testPort(port: number, _csrf: string): Promise<{ success: boolean; statusCode: number; protocol: 'https' | 'http'; error?: string }> {
+        return this.mockTestResults[port] || { success: false, statusCode: 500, protocol: 'http', error: 'Conn error' };
     }
 
     // Expose protected tryDetect for testing
@@ -95,8 +95,8 @@ suite('Diagnostics Detail Test Suite', () => {
         finder.mockPortStdout = JSON.stringify([58001, 58002]);
 
         finder.mockTestResults = {
-            58001: { success: false, statusCode: 404 },
-            58002: { success: false, statusCode: 503 }
+            58001: { success: false, statusCode: 404, protocol: 'http' },
+            58002: { success: false, statusCode: 503, protocol: 'http' }
         };
 
         await finder.runTryDetect();
@@ -111,7 +111,7 @@ suite('Diagnostics Detail Test Suite', () => {
         finder.mockPortStdout = JSON.stringify([58001]);
 
         finder.mockTestResults = {
-            58001: { success: false, statusCode: 403, error: 'CSRF invalid' }
+            58001: { success: false, statusCode: 403, protocol: 'http', error: 'CSRF invalid' }
         };
 
         await finder.runTryDetect();
@@ -124,8 +124,8 @@ suite('Diagnostics Detail Test Suite', () => {
         finder.mockPortStdout = JSON.stringify([58001, 58002]);
 
         finder.mockTestResults = {
-            58001: { success: false, statusCode: 404 },
-            58002: { success: true, statusCode: 200 }
+            58001: { success: false, statusCode: 404, protocol: 'http' },
+            58002: { success: true, statusCode: 200, protocol: 'http' }
         };
 
         const result = await finder.runTryDetect();

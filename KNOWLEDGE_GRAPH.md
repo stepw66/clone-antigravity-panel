@@ -9,7 +9,7 @@
 - **Type**: `PROJECT`
 - **Observations**:
   - A VS Code extension toolkit for Antigravity IDE users, providing quota monitoring, cache management, and system visualization.
-  - Current version is 2.4.1.
+  - Current version is 2.4.2.
   - Includes 'Auto-Accept' (Hands-free Mode) feature for automatically approving agent steps and terminal commands.
 
 ### Brain Directory

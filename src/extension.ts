@@ -163,7 +163,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           reason,
           candidateCount: count,
           parsingInfo,
-          attemptDetails: attemptDetailsStr
+          attemptDetails: attemptDetailsStr,
+          // Enhanced diagnostics v2
+          tokenPreview: processFinder.tokenPreview,
+          portsFromCmdline: processFinder.portsFromCmdline,
+          portsFromNetstat: processFinder.portsFromNetstat,
+          protocolUsed: processFinder.protocolUsed,
+          retryCount: processFinder.retryCount
         });
         hasShownNotification = true;
       }
